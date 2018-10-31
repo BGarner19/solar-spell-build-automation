@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import os
+import platform
 import shutil
 import tarfile
 import tempfile
@@ -350,16 +351,19 @@ class LibraryVersionBuildUtil:
 
 
 class DiskSpace:
-    
 
     def getfreespace(self):
-		
+
+        print(platform.system())
+
         if platform.system() == 'Windows':
-            disk_stats = os.statvfs('/')
-            block_size = disk_stats.f_frsize
-            avail_blocks = disk_stats.f_bavail
-            total_blocks = disk_stats.f_blocks
-		
-        free_space = self.block_size * self.avail_blocks
-        total_space = self.total_blocks * self.block_size
+            return 0, 0
+
+        disk_stats = os.statvfs('/')
+        block_size = disk_stats.f_frsize
+        avail_blocks = disk_stats.f_bavail
+        total_blocks = disk_stats.f_blocks
+
+        free_space = block_size * avail_blocks
+        total_space = total_blocks * block_size
         return (free_space, total_space)
