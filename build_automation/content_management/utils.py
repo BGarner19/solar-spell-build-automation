@@ -354,8 +354,6 @@ class DiskSpace:
 
     def getfreespace(self):
 
-        print(platform.system())
-
         if platform.system() == 'Windows':
             return 0, 0
 
