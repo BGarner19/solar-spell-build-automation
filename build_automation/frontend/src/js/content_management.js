@@ -186,7 +186,7 @@ class ContentManagement extends React.Component{
         return (
             <div>
                 <Grid container spacing={8} style={{paddingLeft: '20px'}}>
-                    <Grid item xs={3} style={{paddingLeft: '20px'}}>
+                    <Grid item xs={4} style={{paddingLeft: '20px'}}>
                         <h3>Content Management</h3>
                         <Button variant="raised" color="primary" onClick={e => {this.setCurrentView('manage')}}>
                             Manage Content
