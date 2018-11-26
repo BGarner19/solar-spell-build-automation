@@ -1,13 +1,14 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
 import UploadContent from './upload_content';
-import Snackbar from '@material-ui/core/Snackbar';
 import BulkUploadContent from './bulk_upload_content';
+import Snackbar from 'material-ui/Snackbar';
 import FileListComponent from './file_list_component';
 import {buildMapFromArray} from './utils';
 import {APP_URLS} from "./url";
 import axios from 'axios';
+import BulkUploadMetadata from "./bulk_upload_metadata";
 
 const styles = theme => ({
     root: {
@@ -160,8 +161,13 @@ class ContentManagement extends React.Component{
 
     uploadBulkFiles() {
         this.setState({
-            currentView: 'bulkUploadContent',
+            currentView: 'bulkUpload',
+        })
+    }
 
+    uploadMetadata() {
+        this.setState({
+            currentView: 'uploadMetadata',
         })
     }
 
@@ -191,35 +197,40 @@ class ContentManagement extends React.Component{
         let splitval = inputStr.split("-");
         return new Date(splitval[0], splitval[1] - 1, splitval[2]);
     }
-
     render(){
         return (
             <div>
                 <Grid container spacing={8} style={{paddingLeft: '20px'}}>
-                    <Grid item xs={3} style={{paddingLeft: '20px'}}>
+                    <Grid item xs={4} style={{paddingLeft: '20px'}}>
                         <h3>Content Management</h3>
-                        <Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
+                        <Button variant="raised" color="primary" onClick={e => {this.setCurrentView('manage')}}>
                             Manage Content
                         </Button>
                         <div style={{marginTop: '20px'}}> </div>
-                        <Button variant="contained" color="primary" onClick={e => {this.uploadNewFile()}}>
+                        <Button variant="raised" color="primary" onClick={e => {this.uploadNewFile()}}>
                             Add Content
                         </Button>
                         <div style={{marginTop: '20px'}}> </div>
                         <Button variant="raised" color="primary" onClick={e => {this.uploadBulkFiles()}}>
                             Express Loading
                         </Button>
+                        <div style={{marginTop: '20px'}}> </div>
+                        <Button variant="raised" color="primary" onClick={e => {this.uploadMetadata()}}>
+                            Upload Metadata
+                        </Button>
                     </Grid>
 
                     <Grid item xs={8}>
-                        {this.state.isLoaded && this.state.currentView=='manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
+                        {this.state.isLoaded && this.state.currentView === 'manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
                                                                                                      onDelete={this.handleFileDelete} allFiles={this.state.files}
                                                                                                      tagIdsTagsMap={this.tagIdTagsMap} />}
-                        {this.state.isLoaded && this.state.currentView=='upload'&&<UploadContent onSave={this.saveContentCallback}
+                        {this.state.isLoaded && this.state.currentView === 'upload'&&<UploadContent onSave={this.saveContentCallback}
                                                                                                  tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
                                                                                                  content={this.state.content}/>}
 
-                        {this.state.isLoaded && this.state.currentView === 'bulkUploadContent' && <BulkUploadContent />}
+                        {this.state.isLoaded && this.state.currentView === 'bulkUpload' && <BulkUploadContent />}
+
+                        {this.state.isLoaded && this.state.currentView === 'uploadMetadata' && <BulkUploadMetadata />}
 
                         {!this.state.isLoaded && 'loading'}
                     </Grid>
@@ -232,7 +243,7 @@ class ContentManagement extends React.Component{
                     open={Boolean(this.state.message)}
                     onClose={this.handleCloseSnackbar}
                     message={<span>{this.state.message}</span>}
-                    ContentProps={{
+                    SnackbarContentProps={{
                         "style": this.getErrorClass()
                     }}
                 />
@@ -251,4 +262,4 @@ class ContentManagement extends React.Component{
         })
     }
 }
-export default ContentManagement;
+module.exports = ContentManagement;
