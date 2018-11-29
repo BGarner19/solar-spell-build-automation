@@ -1,11 +1,11 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
+import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
+import AppBar from 'material-ui/AppBar';
+import Typography from 'material-ui/Typography';
+import TextField from 'material-ui/TextField';
 import {APP_URLS, get_url} from "./url";
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from 'material-ui/Snackbar';
 import axios from 'axios';
 
 const styles = theme => ({

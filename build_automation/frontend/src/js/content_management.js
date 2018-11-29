@@ -228,9 +228,9 @@ class ContentManagement extends React.Component{
                                                                                                  tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
                                                                                                  content={this.state.content}/>}
 
-                        {this.state.isLoaded && this.state.currentView === 'bulkUpload' && <BulkUploadContent />}
+                        {this.state.isLoaded && this.state.currentView === 'bulkUpload'&&<BulkUploadContent />}
 
-                        {this.state.isLoaded && this.state.currentView === 'uploadMetadata' && <BulkUploadMetadata />}
+                        {this.state.isLoaded && this.state.currentView === 'uploadMetadata'&&<BulkUploadMetadata />}
 
                         {!this.state.isLoaded && 'loading'}
                     </Grid>
