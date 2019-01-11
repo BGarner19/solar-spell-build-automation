@@ -218,7 +218,7 @@ class TagManagementComponent extends React.Component {
                 [tagDataKey]: prevState[tagDataKey],
                 message: 'Delete successful',
                 messageType: 'info'
-            }
+            };
             for (var i = 0; i < newState[tagDataKey].length; i++) {
                 if (newState[tagDataKey][i].id == deletedItemId) {
                     newState[tagDataKey].splice(i, 1);
@@ -313,12 +313,12 @@ class TagManagementComponent extends React.Component {
         return (
             <Grid container spacing={0}>
                 <Grid item xs={4}>
-                    {/* <Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
+                    { <Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
             Manage MetaData
-            </Button> */}
+            </Button> }
 
                 </Grid>
-                {this.state.currentView == 'manage' && (
+                {this.state.currentView === 'manage' && (
 
                     <Grid container spacing={0}>
                         <Grid item xs={12}>
@@ -574,7 +574,7 @@ class TagManagementComponent extends React.Component {
 
                 )}
                 {
-                    this.state.currentView == 'addTag' &&
+                    this.state.currentView === 'addTag' &&
                     <TagCreation tag={this.state.selectedTag} title={this.state.currentTitle} onSave={this.saveTagCallback}
                         onCancel={() => this.setCurrentView('manage')} listUrl={this.state.listUrl}
                         detailUrl={this.state.detailUrl} />

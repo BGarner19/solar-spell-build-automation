@@ -108,11 +108,11 @@ class MainScreen extends React.Component {
             </Grid>
             <Grid container style={{marginTop: '20px'}}>
                 <Grid item xs={12}>
-                    {currentTab == 'dirlayout' && <DirectoryLayoutComponent />}
-                    {currentTab == 'contents' && <ContentManagement />}
-                    {currentTab == 'tags' && <TagManagement/>}
-                    {currentTab == 'images' && <BuildProcessComponent />}
-                    {currentTab == 'sysinfo' && <DiskSpace/>}
+                    {currentTab === 'dirlayout' && <DirectoryLayoutComponent />}
+                    {currentTab === 'contents' && <ContentManagement />}
+                    {currentTab === 'tags' && <TagManagement/>}
+                    {currentTab === 'images' && <BuildProcessComponent />}
+                    {currentTab === 'sysinfo' && <DiskSpace/>}
                 </Grid>
             </Grid>
             </React.Fragment>
