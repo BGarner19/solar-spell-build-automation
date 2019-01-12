@@ -126,7 +126,7 @@ class TagManagementComponent extends React.Component {
     }
 
     handleChange(panel) {
-        const thisInstance = this
+        const thisInstance = this;
         return function (event, expanded) {
             thisInstance.setState({
                 expanded: expanded ? panel : false,
@@ -220,7 +220,7 @@ class TagManagementComponent extends React.Component {
                 messageType: 'info'
             };
             for (var i = 0; i < newState[tagDataKey].length; i++) {
-                if (newState[tagDataKey][i].id == deletedItemId) {
+                if (newState[tagDataKey][i].id === deletedItemId) {
                     newState[tagDataKey].splice(i, 1);
                     break;
                 }
@@ -263,7 +263,7 @@ class TagManagementComponent extends React.Component {
                 currentView: 'manage'
             };
 
-            if (saveType == TAG_SAVE_TYPE.CREATE) {
+            if (saveType === TAG_SAVE_TYPE.CREATE) {
                 const newTag = {
                     id: savedTag.id,
                     name: savedTag.name,
@@ -271,9 +271,9 @@ class TagManagementComponent extends React.Component {
                 };
                 newState[tagDataKey].push(newTag);
 
-            } else if (saveType == TAG_SAVE_TYPE.UPDATE) {
+            } else if (saveType === TAG_SAVE_TYPE.UPDATE) {
                 newState[tagDataKey].forEach(eachTag => {
-                    if (eachTag.id == savedTag.id) {
+                    if (eachTag.id === savedTag.id) {
                         eachTag.name = savedTag.name;
                         eachTag.description = savedTag.description;
                     }

@@ -54,7 +54,7 @@ class MainScreen extends React.Component {
         axios
             .get(APP_URLS.DISKSPACE, {responseType: 'json'})
             .then((response) => {
-                this.used = 100*(response.data.total_space-response.data.available_space)/response.data.total_space
+                this.used = 100*(response.data.total_space-response.data.available_space)/response.data.total_space;
                 const newState = ({completed: 100*(response.data.total_space-response.data.available_space)/response.data.total_space, showBadge: false});
                 if(newState.completed > 80) {
                     newState.showBadge= true
@@ -110,9 +110,9 @@ class MainScreen extends React.Component {
                 <Grid item xs={12}>
                     {currentTab === 'dirlayout' && <DirectoryLayoutComponent />}
                     {currentTab === 'contents' && <ContentManagement />}
-                    {currentTab === 'tags' && <TagManagement/>}
+                    {currentTab === 'tags' && <TagManagement />}
                     {currentTab === 'images' && <BuildProcessComponent />}
-                    {currentTab === 'sysinfo' && <DiskSpace/>}
+                    {currentTab === 'sysinfo' && <DiskSpace />}
                 </Grid>
             </Grid>
             </React.Fragment>
