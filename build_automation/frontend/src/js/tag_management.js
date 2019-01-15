@@ -314,8 +314,8 @@ class TagManagementComponent extends React.Component {
             <Grid container spacing={0}>
                 <Grid item xs={4}>
                     { <Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
-            Manage MetaData
-            </Button> }
+                        Manage MetaData
+                    </Button> }
 
                 </Grid>
                 {this.state.currentView === 'manage' && (
@@ -357,7 +357,7 @@ class TagManagementComponent extends React.Component {
                                         <Grid item>
                                             <Button variant="contained" color="primary" onClick={e => { this.addNewTag('Coverages') }}>
                                                 Add New
-            </Button>
+                                            </Button>
                                         </Grid>
                                         <DataGrid
                                             rows={coverageRows}
@@ -386,7 +386,7 @@ class TagManagementComponent extends React.Component {
                                         <Grid item>
                                             <Button variant="contained" color="primary" onClick={e => { this.addNewTag('Subjects') }}>
                                                 Add New
-            </Button>
+                                            </Button>
                                         </Grid>
                                         <DataGrid
                                             rows={subjectRows}
@@ -439,7 +439,7 @@ class TagManagementComponent extends React.Component {
                                         <Grid item>
                                             <Button variant="contained" color="primary" onClick={e => { this.addNewTag('Work Areas') }}>
                                                 Add New
-            </Button>
+                                            </Button>
                                         </Grid>
                                         <DataGrid
                                             rows={workareaRows}
@@ -466,7 +466,7 @@ class TagManagementComponent extends React.Component {
                                         <Grid item>
                                             <Button variant="contained" color="primary" onClick={e => { this.addNewTag('Languages') }}>
                                                 Add New
-            </Button>
+                                            </Button>
                                         </Grid>
                                         <DataGrid
                                             rows={languageRows}
@@ -490,9 +490,10 @@ class TagManagementComponent extends React.Component {
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                     <Grid container>
-                                        <Grid item><Button variant="contained" color="primary" onClick={e => { this.addNewTag('Catalogers') }}>
-                                            Add New
-            </Button>
+                                        <Grid item>
+                                            <Button variant="contained" color="primary" onClick={e => { this.addNewTag('Catalogers') }}>
+                                                Add New
+                                            </Button>
                                         </Grid>
                                         <DataGrid
                                             rows={catalogerRows}
@@ -524,7 +525,7 @@ class TagManagementComponent extends React.Component {
 
                                 >
                                     Edit
-                    </MenuItem>
+                                </MenuItem>
                                 <MenuItem
                                     onClick={evt => {
                                         this.confirmDeleteTag();
@@ -532,7 +533,7 @@ class TagManagementComponent extends React.Component {
                                     }}
                                 >
                                     Delete
-                    </MenuItem>
+                                </MenuItem>
                             </Menu>
                         </Grid>
                         <Dialog
@@ -545,15 +546,15 @@ class TagManagementComponent extends React.Component {
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
                                     Are you sure you want to delete this metadata {this.state.name}?
-                        </DialogContentText>
+                                </DialogContentText>
                             </DialogContent>
                             <DialogActions>
                                 <Button onClick={this.closeConfirmDialog} color="primary">
                                     No
-                        </Button>
+                                </Button>
                                 <Button onClick={evt => { this.closeConfirmDialog(); this.deleteTag(); }} color="primary" autoFocus>
                                     Yes
-                        </Button>
+                                </Button>
                             </DialogActions>
                         </Dialog>
                         <Snackbar
