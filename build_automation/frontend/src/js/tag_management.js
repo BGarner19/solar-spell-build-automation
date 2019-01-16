@@ -2,21 +2,17 @@ import axios from 'axios';
 import React from 'react';
 import TagCreation from './addTag'
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Snackbar from '@material-ui/core/Snackbar';
-import OpenInNew from '@material-ui/icons/OpenInNew';
+import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } from 'material-ui/Dialog';
+import Snackbar from 'material-ui/core/Snackbar';
+import OpenInNew from 'material-ui/icons/OpenInNew';
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
+import Button from 'material-ui/core/Button';
+import TextField from 'material-ui/core/TextField';
+import Grid from 'material-ui/core/Grid';
 import ExpansionPanel, {
     ExpansionPanelDetails,
     ExpansionPanelSummary,
-} from '@material-ui/core/ExpansionPanel';
+} from 'material-ui/core/ExpansionPanel';
 
 import {
     DataTypeProvider,
@@ -34,11 +30,10 @@ import {
     PagingPanel,
 } from '@devexpress/dx-react-grid-material-ui';
 
-import TableRow from '@material-ui/core/TableRow';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { TableRow } from 'material-ui/core/TableRow';
+import Menu, { MenuItem } from 'material-ui/Menu';
+import Typography from 'material-ui/core/Typography';
+import ExpandMoreIcon from 'material-ui/icons/ExpandMore';
 import { APP_URLS, get_url } from "./url";
 import cloneDeep from 'lodash/fp/cloneDeep';
 import { TAG_SAVE_TYPE } from './constants.js';
@@ -313,9 +308,9 @@ class TagManagementComponent extends React.Component {
         return (
             <Grid container spacing={0}>
                 <Grid item xs={4}>
-                    { <Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
+                    { /*<Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
                         Manage MetaData
-                    </Button> }
+                    </Button> */}
 
                 </Grid>
                 {this.state.currentView === 'manage' && (
@@ -595,4 +590,4 @@ class TagManagementComponent extends React.Component {
     }
 }
 
-export default TagManagementComponent;
+module.exports = TagManagementComponent;

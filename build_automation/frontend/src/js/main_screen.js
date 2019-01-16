@@ -3,7 +3,7 @@ import React from 'react';
 import DirectoryLayoutComponent from './directory_layout.js';
 import ContentManagement from './content_management.js';
 import DiskSpace from './diskspace.js';
-import TagManagementComponent from './tag_management.js';
+import TagManagement from './tag_management';
 
 import BuildProcessComponent from './build_process.js';
 import Badge from '@material-ui/core/Badge';
@@ -110,7 +110,7 @@ class MainScreen extends React.Component {
                 <Grid item xs={12}>
                     {currentTab === 'dirlayout' && <DirectoryLayoutComponent />}
                     {currentTab === 'contents' && <ContentManagement />}
-                    {currentTab === 'tags' && <TagManagementComponent />}
+                    {currentTab === 'tags' && <TagManagement />}
                     {currentTab === 'images' && <BuildProcessComponent />}
                     {currentTab === 'sysinfo' && <DiskSpace />}
                 </Grid>
