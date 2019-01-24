@@ -3,7 +3,7 @@ import React from 'react';
 import DirectoryLayoutComponent from './directory_layout.js';
 import ContentManagement from './content_management.js';
 import DiskSpace from './diskspace.js';
-import TagManagement from './tag_management';
+import TagManagement from './tag_management.js';
 
 import BuildProcessComponent from './build_process.js';
 import Badge from '@material-ui/core/Badge';

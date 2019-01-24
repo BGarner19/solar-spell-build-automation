@@ -13,11 +13,9 @@ import OpenInNew from '@material-ui/icons/OpenInNew';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import ExpansionPanel, {
-    ExpansionPanelDetails,
-    ExpansionPanelSummary,
-} from '@material-ui/core/ExpansionPanel';
-
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import {
     DataTypeProvider,
     FilteringState,
@@ -43,7 +41,7 @@ import { APP_URLS, get_url } from "./url";
 import cloneDeep from 'lodash/fp/cloneDeep';
 import { TAG_SAVE_TYPE } from './constants.js';
 
-class TagManagementComponent extends React.Component {
+class TagManagement extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -595,4 +593,4 @@ class TagManagementComponent extends React.Component {
     }
 }
 
-module.exports = TagManagementComponent;
+module.exports = TagManagement;
