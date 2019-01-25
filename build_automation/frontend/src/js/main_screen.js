@@ -77,7 +77,7 @@ class MainScreen extends React.Component {
                 <Grid item xs={12}>
                     <Grid container justify="center" alignItems="center" style={{height: '100%'}}>
                         <Grid item>
-                            <img src={solarSpellLogo} className="spellLogo" />
+                            <img src={solarSpellLogo} className="spellLogo"  alt={""}/>
                         </Grid>
                     </Grid>
                 </Grid>

@@ -285,7 +285,6 @@ class TagManagement extends React.Component {
 
     handleTagEdit() {
         const selectedTag = this.state.selectedTagsMenu.selectedTag;
-        const currentInstance = this;
         this.setState({
             currentView: 'addTag',
             selectedTag: {
@@ -517,7 +516,7 @@ class TagManagement extends React.Component {
                                 onClose={evt => { this.handleMenuClose(evt, 'selectedTagsMenu') }}
                             >
                                 <MenuItem
-                                    onClick={currentView => {
+                                    onClick={evt => {
                                         this.handleTagEdit();
                                     }}
 
