@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React from 'react';
-import TagCreation from './addTag'
+import TagCreation from './addTag.js'
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -41,7 +41,7 @@ import { APP_URLS, get_url } from "./url";
 import cloneDeep from 'lodash/fp/cloneDeep';
 import { TAG_SAVE_TYPE } from './constants.js';
 
-class TagManagement extends React.Component {
+class TagManagementComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -316,7 +316,6 @@ class TagManagement extends React.Component {
 
                 </Grid>
                 {this.state.currentView === 'manage' && (
-
                     <Grid container spacing={0}>
                         <Grid item xs={12}>
                             <ExpansionPanel expanded={expanded === 'creator'} onChange={this.handleChange('creator')} onClick={e => { this.handleAccordionClick('creator') }}>
@@ -592,4 +591,4 @@ class TagManagement extends React.Component {
     }
 }
 
-module.exports = TagManagement;
+module.exports = TagManagementComponent;
