@@ -1,11 +1,11 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import AppBar from 'material-ui/AppBar';
-import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
-import {APP_URLS, get_url} from "./url";
-import Snackbar from 'material-ui/Snackbar';
+import Button from '@material-ui/Button';
+import Grid from '@material-ui/Grid';
+import AppBar from '@material-ui/AppBar';
+import Typography from '@material-ui/Typography';
+import TextField from '@material-ui/TextField';
+import {APP_URLS, get_url} from "./url.js";
+import Snackbar from '@material-ui/Snackbar';
 import axios from 'axios';
 
 const styles = theme => ({
@@ -83,7 +83,7 @@ class BulkUploadMetadata extends React.Component{
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    error={this.state.fieldErrors.file ? true : false}
+                    error={!!this.state.fieldErrors.file}
                     value={this.state.contentFileName}
                     margin="normal"
                 />

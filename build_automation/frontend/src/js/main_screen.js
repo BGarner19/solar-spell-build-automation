@@ -13,7 +13,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import {APP_URLS} from "./url";
+import {APP_URLS} from "./url.js";
 import axios from 'axios';
 
 import solarSpellLogo from '../images/logo.png';
@@ -77,7 +77,7 @@ class MainScreen extends React.Component {
                 <Grid item xs={12}>
                     <Grid container justify="center" alignItems="center" style={{height: '100%'}}>
                         <Grid item>
-                            <img src={solarSpellLogo} className="spellLogo"  alt={""}/>
+                            <img src={solarSpellLogo} className="spellLogo" />
                         </Grid>
                     </Grid>
                 </Grid>
