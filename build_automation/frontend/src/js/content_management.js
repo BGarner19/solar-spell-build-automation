@@ -1,12 +1,14 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import UploadContent from './upload_content';
-import Snackbar from 'material-ui/Snackbar';
+import BulkUploadContent from './bulk_upload_content.js';
+import Snackbar from '@material-ui/core/Snackbar';
 import FileListComponent from './file_list_component';
 import {buildMapFromArray} from './utils';
 import {APP_URLS} from "./url";
 import axios from 'axios';
+import BulkUploadMetadata from "./bulk_upload_metadata.js";
 
 const styles = theme => ({
     root: {
@@ -156,6 +158,19 @@ class ContentManagement extends React.Component{
             }
         })
     }
+
+    uploadBulkFiles() {
+        this.setState({
+            currentView: 'bulkUpload',
+        })
+    }
+
+    uploadMetadata() {
+        this.setState({
+            currentView: 'uploadMetadata',
+        })
+    }
+
     handleContentEdit(content){
         this.setState({
             currentView: 'upload',
@@ -186,8 +201,9 @@ class ContentManagement extends React.Component{
         return (
             <div>
                 <Grid container spacing={8} style={{paddingLeft: '20px'}}>
-                    <Grid item xs={3} style={{paddingLeft: '20px'}}>
+                    <Grid item xs={4} style={{paddingLeft: '20px'}}>
                         <h3>Content Management</h3>
+                        <div style={{marginTop: '20px'}}> </div>
                         <Button variant="raised" color="primary" onClick={e => {this.setCurrentView('manage')}}>
                             Manage Content
                         </Button>
@@ -196,18 +212,27 @@ class ContentManagement extends React.Component{
                             Add Content
                         </Button>
                         <div style={{marginTop: '20px'}}> </div>
-                        <Button variant="raised" color="primary" onClick={e => {this.uploadNewFile()}}>
+                        <Button variant="raised" color="primary" onClick={e => {this.uploadBulkFiles()}}>
                             Express Loading
+                        </Button>
+                        <div style={{marginTop: '20px'}}> </div>
+                        <Button variant="raised" color="primary" onClick={e => {this.uploadMetadata()}}>
+                            Upload Metadata
                         </Button>
                     </Grid>
 
                     <Grid item xs={8}>
-                        {this.state.isLoaded && this.state.currentView=='manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
-                                                                                                     onDelete={this.handleFileDelete} allFiles={this.state.files}
-                                                                                                     tagIdsTagsMap={this.tagIdTagsMap} />}
-                        {this.state.isLoaded && this.state.currentView=='upload'&&<UploadContent onSave={this.saveContentCallback}
-                                                                                                 tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
-                                                                                                 content={this.state.content}/>}
+                        {this.state.isLoaded && this.state.currentView === 'manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
+                                                                                                        onDelete={this.handleFileDelete} allFiles={this.state.files}
+                                                                                                        tagIdsTagsMap={this.tagIdTagsMap} />}
+                        {this.state.isLoaded && this.state.currentView === 'upload'&&<UploadContent onSave={this.saveContentCallback}
+                                                                                                    tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
+                                                                                                    content={this.state.content}/>}
+
+                        {this.state.isLoaded && this.state.currentView === 'bulkUpload'&&<BulkUploadContent />}
+
+                        {this.state.isLoaded && this.state.currentView === 'uploadMetadata'&&<BulkUploadMetadata />}
+
                         {!this.state.isLoaded && 'loading'}
                     </Grid>
                 </Grid>
