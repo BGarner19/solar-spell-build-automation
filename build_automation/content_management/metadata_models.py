@@ -49,11 +49,11 @@ class ContentMetadata(object):
 
     def __str__(self):
         return "Content Metadata Object: \n" + "File Name: " + self.file_name + "\nSource: " + self.source + \
-               "\nTitle: " + self.title + "\nCreators: " + self.creators + "\nDate Created: " + self.date_created + \
+               "\nTitle: " + self.title + "\nCreators: " + str(self.creators) + "\nDate Created: " + self.date_created + \
                 "\nCoverage: " + self.coverage + "\nLibrary Version: " + self.library_version + "\nMain Folder: " + \
-                self.main_folder + "\nSub Folder: " + self.sub_folder + "\nSubject: " + self.subject + "\nKeywords: " + \
-                self.keywords + "\nWork Areas: " + self.workareas + "\nLanguage: " + self.language + "\nCopyright: " + \
-                self.copyright + "\nRights Statement: " + self.rights_statement + "\nContributors: " + self.contributors
+                self.main_folder + "\nSub Folder: " + self.sub_folder + "\nSubject: " + str(self.subject) + "\nKeywords: " + \
+                str(self.keywords) + "\nWork Areas: " + str(self.workareas) + "\nLanguage: " + str(self.language) + "\nCopyright: " + \
+                self.copyright + "\nRights Statement: " + self.rights_statement + "\nContributors: " + str(self.contributors)
 
 
 def parse_metadata_csv(csv_file):
@@ -68,19 +68,19 @@ def parse_metadata_csv(csv_file):
             file_name = row[0]
             source = row[1]
             title = row[2]
-            creators = row[3]
+            creators = grab_multiple_items_to_array(row[3])
             date_created = row[4]
             coverage = row[5]
             library_version = row[6]
             main_folder = row[7]
             sub_folder = row[8]
-            subject = row[9]
-            keywords = row[10]
-            workareas = row[11]
-            language = row[12]
+            subject = grab_multiple_items_to_array(row[9])
+            keywords = grab_multiple_items_to_array(row[10])
+            workareas = grab_multiple_items_to_array(row[11])
+            language = grab_multiple_items_to_array(row[12])
             copyright_statement = row[13]
             rights_statement = row[14]
-            contributors = row[15]
+            contributors = grab_multiple_items_to_array(row[15])
 
             content_metadata = ContentMetadata(file_name, source, title, creators, date_created, coverage, library_version,
                                                main_folder, sub_folder, subject, keywords, workareas, language,
@@ -94,6 +94,11 @@ def parse_metadata_csv(csv_file):
         return metadata
 
 
+def grab_multiple_items_to_array(line):
+
+    items = line.split("|")
+
+    return items
 
 
 
