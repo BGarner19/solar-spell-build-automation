@@ -2,13 +2,12 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import UploadContent from './upload_content';
-import BulkUploadContent from './bulk_upload_content.js';
 import Snackbar from '@material-ui/core/Snackbar';
+import BulkUploadContent from './bulk_upload_content';
 import FileListComponent from './file_list_component';
 import {buildMapFromArray} from './utils';
 import {APP_URLS} from "./url";
 import axios from 'axios';
-import BulkUploadMetadata from "./bulk_upload_metadata.js";
 
 const styles = theme => ({
     root: {
@@ -46,6 +45,7 @@ class ContentManagement extends React.Component{
         this.tagIdTagsMap = {};
         this.handleFileDelete = this.handleFileDelete.bind(this);
         this.saveContentCallback = this.saveContentCallback.bind(this);
+        this.saveContentCallbackTwo = this.saveContentCallbackTwo.bind(this);
         this.uploadNewFile = this.uploadNewFile.bind(this);
         this.handleContentEdit = this.handleContentEdit.bind(this);
         this.handleCloseSnackbar = this.handleCloseSnackbar.bind(this);
@@ -72,6 +72,7 @@ class ContentManagement extends React.Component{
         allRequests.push(axios.get(APP_URLS.CONTENTS_LIST, {
             responseType: 'json'}));
         Promise.all(allRequests).then(function(values) {
+
             currInstance.setState({
                 tags: values[0].data,
                 files: values[1].data, isLoaded: true
@@ -107,6 +108,7 @@ class ContentManagement extends React.Component{
         })
     }
     saveContentCallback(content, updated){
+        console.log("save callback in CM.js");
         const currInstance = this;
         axios.get(APP_URLS.ALLTAGS_LIST, {
             responseType: 'json'
@@ -120,15 +122,64 @@ class ContentManagement extends React.Component{
                             files.splice(files.indexOf(eachFile), 1, content);
                         }
                     });
+                    console.log("updated true");
                 }
                 else{
+                    console.log("updated false");
                     files.push(content);
                 }
+                console.log(files);
                 return {
                     message: 'Save Successful',
                     messageType: 'info',
                     currentView: 'manage',
                     files,
+                    tags: response.data
+                }
+            })
+        }).catch(function (error) {
+            console.error(error);
+        });
+    }
+
+    componentDidUpdate() {
+        this.loadData()
+
+    }
+
+    saveContentCallbackTwo(content, updated){
+        console.log("save callback in CM2.js");
+        const currInstance = this;
+        axios.get(APP_URLS.ALLTAGS_LIST, {
+            responseType: 'json'
+        }).then(function (response) {
+
+            currInstance.tagIdTagsMap=currInstance.buildTagIdTagsMap(response.data);
+            currInstance.setState((prevState, props)=>{
+                const {files} = prevState;
+                if (updated){
+                    files.forEach(eachFile => {
+                        if (eachFile.id===content.id){
+                            files.splice(files.indexOf(eachFile), 1, content);
+                        }
+                    });
+
+                }
+                else{
+                    //console.log(files);
+                    files.push(content);
+                    console.log(files);
+                    if(currInstance.state.isLoaded) {
+                        currInstance.setState();
+                    }
+                }
+
+                console.log("props: " + JSON.stringify(props));
+                return {
+                    message: 'Save Successful',
+                    messageType: 'info',
+                    currentView: 'manage',
+                    content: files,
                     tags: response.data
                 }
             })
@@ -161,13 +212,24 @@ class ContentManagement extends React.Component{
 
     uploadBulkFiles() {
         this.setState({
-            currentView: 'bulkUpload',
-        })
-    }
-
-    uploadMetadata() {
-        this.setState({
-            currentView: 'uploadMetadata',
+            currentView: 'bulkUploadContent',
+            content: {
+                id: -1,
+                name: "",
+                description: "",
+                creators: [],
+                coverages: [],
+                subjects: [],
+                keywords: [],
+                workareas: [],
+                languages: [],
+                catalogers: [],
+                updatedDate: new Date(),
+                source: "",
+                copyright: "",
+                rightsStatement: "",
+                originalFileName: ""
+            }
         })
     }
 
@@ -197,41 +259,36 @@ class ContentManagement extends React.Component{
         let splitval = inputStr.split("-");
         return new Date(splitval[0], splitval[1] - 1, splitval[2]);
     }
+
     render(){
         return (
             <div>
                 <Grid container spacing={8} style={{paddingLeft: '20px'}}>
-                    <Grid item xs={4} style={{paddingLeft: '20px'}}>
+                    <Grid item xs={3} style={{paddingLeft: '20px'}}>
                         <h3>Content Management</h3>
-                        <div style={{marginTop: '20px'}}> </div>
-                        <Button variant="raised" color="primary" onClick={e => {this.setCurrentView('manage')}}>
+                        <Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
                             Manage Content
                         </Button>
                         <div style={{marginTop: '20px'}}> </div>
-                        <Button variant="raised" color="primary" onClick={e => {this.uploadNewFile()}}>
+                        <Button variant="contained" color="primary" onClick={e => {this.uploadNewFile()}}>
                             Add Content
                         </Button>
                         <div style={{marginTop: '20px'}}> </div>
                         <Button variant="raised" color="primary" onClick={e => {this.uploadBulkFiles()}}>
                             Express Loading
                         </Button>
-                        <div style={{marginTop: '20px'}}> </div>
-                        <Button variant="raised" color="primary" onClick={e => {this.uploadMetadata()}}>
-                            Upload Metadata
-                        </Button>
                     </Grid>
 
                     <Grid item xs={8}>
-                        {this.state.isLoaded && this.state.currentView === 'manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
-                                                                                                        onDelete={this.handleFileDelete} allFiles={this.state.files}
-                                                                                                        tagIdsTagsMap={this.tagIdTagsMap} />}
-                        {this.state.isLoaded && this.state.currentView === 'upload'&&<UploadContent onSave={this.saveContentCallback}
-                                                                                                    tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
-                                                                                                    content={this.state.content}/>}
+                        {this.state.isLoaded && this.state.currentView=='manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
+                                                                                                     onDelete={this.handleFileDelete} allFiles={this.state.files}
+                                                                                                     tagIdsTagsMap={this.tagIdTagsMap} />}
+                        {this.state.isLoaded && this.state.currentView=='upload'&&<UploadContent onSave={this.saveContentCallback}
+                                                                                                 tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
+                                                                                                 content={this.state.content}/>}
 
-                        {this.state.isLoaded && this.state.currentView === 'bulkUpload'&&<BulkUploadContent />}
-
-                        {this.state.isLoaded && this.state.currentView === 'uploadMetadata'&&<BulkUploadMetadata />}
+                        {this.state.isLoaded && this.state.currentView === 'bulkUploadContent' && <BulkUploadContent onSave={this.saveContentCallbackTwo}
+                            /* content={this.state.content} *//>}
 
                         {!this.state.isLoaded && 'loading'}
                     </Grid>
@@ -244,7 +301,7 @@ class ContentManagement extends React.Component{
                     open={Boolean(this.state.message)}
                     onClose={this.handleCloseSnackbar}
                     message={<span>{this.state.message}</span>}
-                    SnackbarContentProps={{
+                    ContentProps={{
                         "style": this.getErrorClass()
                     }}
                 />
@@ -263,4 +320,4 @@ class ContentManagement extends React.Component{
         })
     }
 }
-module.exports = ContentManagement;
+export default ContentManagement;
