@@ -40,6 +40,7 @@ class ContentManagement extends React.Component{
             content: null,
             tags: {},
             isLoaded: false,
+            shouldRefresh: false,
         };
         this.setCurrentView = this.setCurrentView.bind(this);
         this.tagIdTagsMap = {};
@@ -142,8 +143,12 @@ class ContentManagement extends React.Component{
         });
     }
 
-    componentDidUpdate() {
-        this.loadData()
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.shouldRefresh) {
+            console.log(this.state);
+            this.loadData();
+            this.setState({shouldRefresh: false});
+        }
 
     }
 
@@ -169,6 +174,7 @@ class ContentManagement extends React.Component{
                     //console.log(files);
                     files.push(content);
                     console.log(files);
+                    currInstance.setState({shouldRefresh: true});
                     if(currInstance.state.isLoaded) {
                         currInstance.setState();
                     }
@@ -280,10 +286,10 @@ class ContentManagement extends React.Component{
                     </Grid>
 
                     <Grid item xs={8}>
-                        {this.state.isLoaded && this.state.currentView=='manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
+                        {this.state.isLoaded && this.state.currentView === 'manage'&&<FileListComponent tags={this.state.tags} onEdit={this.handleContentEdit}
                                                                                                      onDelete={this.handleFileDelete} allFiles={this.state.files}
                                                                                                      tagIdsTagsMap={this.tagIdTagsMap} />}
-                        {this.state.isLoaded && this.state.currentView=='upload'&&<UploadContent onSave={this.saveContentCallback}
+                        {this.state.isLoaded && this.state.currentView === 'upload'&&<UploadContent onSave={this.saveContentCallback}
                                                                                                  tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
                                                                                                  content={this.state.content}/>}
 
