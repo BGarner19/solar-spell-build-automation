@@ -51,7 +51,9 @@ class ContentManagement extends React.Component{
         this.handleContentEdit = this.handleContentEdit.bind(this);
         this.handleCloseSnackbar = this.handleCloseSnackbar.bind(this);
     }
-
+    /*
+    * Populate page with all uploaded content
+    */
     componentDidMount() {
         this.loadData()
     }
@@ -63,6 +65,9 @@ class ContentManagement extends React.Component{
         });
         return tagIdTagMap;
     }
+    /*
+    * Get all uploaded content
+    */
     loadData() {
         const currInstance = this;
         const allRequests = [];
@@ -94,9 +99,15 @@ class ContentManagement extends React.Component{
             return newState;
         })
     }
+    /*
+    * Current view(current window)
+    */
     setCurrentView(viewName){
         this.setState({currentView: viewName})
     }
+    /*
+    * Delete content
+    */
     handleFileDelete(file){
         this.setState((prevState, props)=>{
             const {files} = prevState;
@@ -193,6 +204,9 @@ class ContentManagement extends React.Component{
             console.error(error);
         });
     }
+    /*
+    Basic upload screen
+    */
     uploadNewFile(){
         this.setState({
             currentView: 'upload',
@@ -215,7 +229,9 @@ class ContentManagement extends React.Component{
             }
         })
     }
-
+    /*
+    Upload screen for bulk upload
+    */
     uploadBulkFiles() {
         this.setState({
             currentView: 'bulkUploadContent',
@@ -238,7 +254,9 @@ class ContentManagement extends React.Component{
             }
         })
     }
-
+    /*
+    Screen for editing already uploaded content
+     */
     handleContentEdit(content){
         this.setState({
             currentView: 'upload',
@@ -265,20 +283,25 @@ class ContentManagement extends React.Component{
         let splitval = inputStr.split("-");
         return new Date(splitval[0], splitval[1] - 1, splitval[2]);
     }
-
+    /*
+    Main screen for content management
+     */
     render(){
         return (
             <div>
                 <Grid container spacing={8} style={{paddingLeft: '20px'}}>
                     <Grid item xs={3} style={{paddingLeft: '20px'}}>
                         <h3>Content Management</h3>
+                        /*Button for main screen(content management)*/
                         <Button variant="contained" color="primary" onClick={e => {this.setCurrentView('manage')}}>
                             Manage Content
                         </Button>
+                        /*Button for basic(single) uploads*/
                         <div style={{marginTop: '20px'}}> </div>
                         <Button variant="contained" color="primary" onClick={e => {this.uploadNewFile()}}>
                             Add Content
                         </Button>
+                        /*Button for bulk uploading*/
                         <div style={{marginTop: '20px'}}> </div>
                         <Button variant="raised" color="primary" onClick={e => {this.uploadBulkFiles()}}>
                             Express Loading
