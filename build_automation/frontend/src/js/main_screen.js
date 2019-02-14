@@ -6,16 +6,15 @@ import DiskSpace from './diskspace.js';
 import TagManagement from './tag_management';
 
 import BuildProcessComponent from './build_process.js';
-import Badge from 'material-ui/Badge';
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
+import Badge from '@material-ui/core/Badge';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 import {APP_URLS} from "./url";
 import axios from 'axios';
-
-
 
 import solarSpellLogo from '../images/logo.png';
 import '../css/style.css';
@@ -35,27 +34,33 @@ class MainScreen extends React.Component {
         };
         this.handleTabClick = this.handleTabClick.bind(this);
     }
-
+    /*
+    * Event for switching tabs
+    */
     handleTabClick(event, selectedTab) {
         this.setState({ currentTab: selectedTab });
       };
-
+    /*
+    * Call showBadge method
+    */
     componentDidMount() {
         this.showBadge();
         this.timerID = setInterval(
             () => this.showBadge(),1000*60*60
         );
     }
-
+    /*
+    * Clear
+    */
     componentWillUnmount() {
         clearInterval(this.timerID);
     }
-
+    /*Load axios items(diskspace)*/
     showBadge() {
         axios
             .get(APP_URLS.DISKSPACE, {responseType: 'json'})
             .then((response) => {
-                this.used = 100*(response.data.total_space-response.data.available_space)/response.data.total_space
+                this.used = 100*(response.data.total_space-response.data.available_space)/response.data.total_space;
                 const newState = ({completed: 100*(response.data.total_space-response.data.available_space)/response.data.total_space, showBadge: false});
                 if(newState.completed > 80) {
                     newState.showBadge= true
@@ -67,7 +72,9 @@ class MainScreen extends React.Component {
                 // TODO : Show the error message.
             });
     }
-
+    /*
+    * Render main screen
+    */
     render() {
         const currentTab = this.state.currentTab;
         const { classes } = this.props;
@@ -93,6 +100,7 @@ class MainScreen extends React.Component {
                             textColor="secondary"
                             centered
                         >
+                            /*Tabs for links to other pages*/
                             <Tab value="tags" label="Metadata" />
                             <Tab value="contents" label="Contents" />
                             <Tab value="dirlayout" label="Library Versions" />
@@ -107,6 +115,7 @@ class MainScreen extends React.Component {
                     </Paper>
                 </Grid>
             </Grid>
+            /*Tabs for navigating to the other pages*/
             <Grid container style={{marginTop: '20px'}}>
                 <Grid item xs={12}>
                     {currentTab == 'dirlayout' && <DirectoryLayoutComponent />}
