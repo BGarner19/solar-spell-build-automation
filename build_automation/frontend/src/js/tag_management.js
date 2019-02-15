@@ -125,7 +125,7 @@ class TagManagementComponent extends React.Component {
     }
 
     handleChange(panel) {
-        const thisInstance = this
+        const thisInstance = this;
         return function (event, expanded) {
             thisInstance.setState({
                 expanded: expanded ? panel : false,
@@ -217,7 +217,7 @@ class TagManagementComponent extends React.Component {
                 [tagDataKey]: prevState[tagDataKey],
                 message: 'Delete successful',
                 messageType: 'info'
-            }
+            };
             for (var i = 0; i < newState[tagDataKey].length; i++) {
                 if (newState[tagDataKey][i].id == deletedItemId) {
                     newState[tagDataKey].splice(i, 1);

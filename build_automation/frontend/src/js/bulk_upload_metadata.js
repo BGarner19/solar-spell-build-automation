@@ -44,7 +44,9 @@ class BulkUploadMetadata extends React.Component{
     saveContent(evt) {
 
     }
-
+    /*
+    * Method for selecting files
+    */
     handleFileSelection(evt) {
         evt.persist();
         const file = evt.target.files;
@@ -65,7 +67,9 @@ class BulkUploadMetadata extends React.Component{
         });
 
     }
-
+    /*
+    * Render the upload metadata page
+    */
     render(){
         return (
             <Grid item xs={8}>
@@ -123,10 +127,15 @@ class BulkUploadMetadata extends React.Component{
             </Grid>
         )
     }
+    /*
+    * Error method
+    */
     getErrorClass() {
         return this.state.messageType === "error" ? {backgroundColor: '#B71C1C', fontWeight: 'normal'} : {};
     }
-
+    /*
+    * Close Snackbar
+    */
     handleCloseSnackbar() {
         this.setState({
             message: null,
