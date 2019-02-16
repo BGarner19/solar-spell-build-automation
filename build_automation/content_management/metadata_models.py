@@ -62,8 +62,6 @@ def parse_metadata_csv(csv_file):
         csv_data = csv.reader(csvfile)
         metadataArray = []
 
-        # TODO: Add error checking and parsing of fields that may have multiple entries to create arrays.
-
         for row in csv_data:
             file_name = row[0]
             source = row[1]
