@@ -28,32 +28,34 @@ from django.db import models
 
 class ContentMetadata(object):
 
-    def __init__(self, file_name, source, title, creators, date_created, coverage, library_version, main_folder,
-                 sub_folder, subject, keywords, workareas, language, copyright_statement, rights_statement, catalogers):
+    def __init__(self, title, file_name, creators, date_created, description, format_type, library_version, audience,
+                 reading_level, coverage, language, main_subject, rights_holder, rights_statement, catalogers, notes):
         self.file_name = file_name
-        self.source = source
         self.title = title
         self.creators = creators
         self.date_created = date_created
-        self.coverage = coverage
+        self.description = description
+        self.format_type = format_type
         self.library_version = library_version
-        self.main_folder = main_folder
-        self.sub_folder = sub_folder
-        self.subject = subject
-        self.keywords = keywords
-        self.workareas = workareas
+        self.audience = audience
+        self.reading_level = reading_level
+        self.coverage = coverage
         self.language = language
-        self.copyright = copyright_statement
+        self.main_subject = main_subject
+        self.rights_holder = rights_holder
         self.rights_statement = rights_statement
         self.catalogers = catalogers
+        self.notes = notes
 
     def __str__(self):
-        return "Content Metadata Object: \n" + "File Name: " + self.file_name + "\nSource: " + self.source + \
-               "\nTitle: " + self.title + "\nCreators: " + str(self.creators) + "\nDate Created: " + self.date_created + \
-                "\nCoverage: " + self.coverage + "\nLibrary Version: " + self.library_version + "\nMain Folder: " + \
-                self.main_folder + "\nSub Folder: " + self.sub_folder + "\nSubject: " + str(self.subject) + "\nKeywords: " + \
-                str(self.keywords) + "\nWork Areas: " + str(self.workareas) + "\nLanguage: " + str(self.language) + "\nCopyright: " + \
-                self.copyright + "\nRights Statement: " + self.rights_statement + "\nContributors: " + str(self.catalogers)
+
+        return "Content Metadata Object: \n" + "File Name: " + self.file_name + "\nTitle: " + self.title + \
+               "\nCreators: " + str(self.creators) + "\nDate Created: " + self.date_created + "\nDescription: " + \
+               "\nFormat Type: " + self.format_type + "\nLibrary Version: " + self.library_version + "\nAudience: " + \
+                self.audience + "\nReading Level: " + self.reading_level + "\nCoverage: " + self.coverage + \
+               "\nLanguage: " + str(self.language) + "\nMain Subject: " + self.main_subject + "\nRights Holder: " + \
+               self.rights_holder + "\nRights Statement: " + self.rights_statement + "\nCatalogers: " + \
+               str(self.catalogers) + "\nNotes: " + self.notes
 
 
 def parse_metadata_csv(csv_file):
@@ -64,26 +66,25 @@ def parse_metadata_csv(csv_file):
 
         for row in csv_data:
             file_name = row[0]
-            source = row[1]
-            title = row[2]
-            creators = grab_multiple_items_to_array(row[3])
-            date_created = row[4]
-            coverage = row[5]
-            main_folder = row[6]
-            sub_folder = row[7]
-            subject = grab_multiple_items_to_array(row[8])
-            keywords = grab_multiple_items_to_array(row[9])
-            library_version = row[10]
-            workareas = grab_multiple_items_to_array(row[11])
-            workareas.extend(grab_multiple_items_to_array(row[12]))
-            language = grab_multiple_items_to_array(row[13])
-            copyright_statement = row[14]
-            rights_statement = row[15]
-            catalogers = grab_multiple_items_to_array(row[16])
+            title = row[1]
+            creators = grab_multiple_items_to_array(row[2])
+            date_created = row[3]
+            description = row[4]
+            format_type = row[5]
+            library_version = row[6]
+            audience = row[7]
+            reading_level = row[8]
+            coverage = row[9]
+            language = grab_multiple_items_to_array(row[10])
+            main_subject = row[11]
+            rights_holder = row[12]
+            rights_statement = row[13]
+            catalogers = grab_multiple_items_to_array(row[14])
+            notes = grab_multiple_items_to_array(row[15])
 
-            content_metadata = ContentMetadata(file_name, source, title, creators, date_created, coverage, library_version,
-                                               main_folder, sub_folder, subject, keywords, workareas, language,
-                                               copyright_statement, rights_statement, catalogers)
+            content_metadata = ContentMetadata(file_name, title, creators, date_created, description, format_type,
+                                               library_version, audience, reading_level, coverage, language,
+                                               main_subject, rights_holder, rights_statement, catalogers, notes)
 
             metadataArray.append(content_metadata)
 
