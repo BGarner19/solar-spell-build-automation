@@ -16,12 +16,18 @@ class AbstractTag(models.Model):
 class Title(AbstractTag):
     title = models.CharField(max_length=100, unique=True)
 
+    def get_absolute_url(self):
+        return reverse('title-detail', args=[str(self.id)])
+
     class Meta:
         ordering = ['title']
 
 
 class FileName(AbstractTag):
     fileName = models.CharField(max_length=100, unique=True)
+
+    def get_absolute_url(self):
+        return reverse('filename-detail', args=[str(self.id)])
 
     class Meta:
         ordering = ['fileName']
@@ -30,12 +36,18 @@ class FileName(AbstractTag):
 class Description(AbstractTag):
     description = models.CharField(max_length=100, unique=True)
 
+    def get_absolute_url(self):
+        return reverse('description-detail', args=[str(self.id)])
+
     class Meta:
         ordering = ['description']
 
 
 class Format(AbstractTag):
     description = models.CharField(max_length=100, unique=True)
+
+    def get_absolute_url(self):
+        return reverse('format-detail', args=[str(self.id)])
 
     class Meta:
         ordering = ['description']
@@ -44,18 +56,28 @@ class Format(AbstractTag):
 class LibraryVersion(AbstractTag):
     version = models.CharField(max_length=100, unique=True)
 
+    def get_absolute_url(self):
+        return reverse('version-detail', args=[str(self.id)])
+
     class Meta:
         ordering = ['version']
 
 
 class Audience(AbstractTag):
     audience = models.CharField(max_length=100, unique=True)
+
+    def get_absolute_url(self):
+        return reverse('audience-detail', args=[str(self.id)])
+    
     class Meta:
         ordering = ['audience']
 
 
 class ReadingLevel(AbstractTag):
     readingLevel = models.IntegerField()
+
+    def get_absolute_url(self):
+        return reverse('reading-level-detail', args=[str(self.id)])
 
     class Meta:
         ordering = ['readingLevel']
@@ -64,12 +86,18 @@ class ReadingLevel(AbstractTag):
 class MainSubject(AbstractTag):
     mainSubject = models.CharField(max_length=100, unique=True)
 
+    def get_absolute_url(self):
+        return reverse('main-subject-detail', args=[str(self.id)])
+
     class Meta:
         ordering = ['mainSubject']
 
 
 class RightsHolder(AbstractTag):
     rights = models.CharField(max_length=1000, unique=False)
+
+    def get_absolute_url(self):
+        return reverse('rights-holder-detail', args=[str(self.id)])
 
     class Meta:
         ordering = ['rights']
@@ -78,12 +106,18 @@ class RightsHolder(AbstractTag):
 class RightsStatement(AbstractTag):
     rightsStatement = models.CharField(max_length=1000, unique=False)
 
+    def get_absolute_url(self):
+        return reverse('rights-statement-detail', args=[str(self.id)])
+
     class Meta:
         ordering = ['rightsStatement']
 
 
 class Notes(AbstractTag):
     notes = models.CharField(max_length=2000, unique=False)
+
+    def get_absolute_url(self):
+        return reverse('notes-detail', args=[str(self.id)])
 
     class Meta:
         ordering = ['notes']
@@ -172,6 +206,16 @@ class Cataloger(AbstractTag):
 
     class Meta:
         ordering = ['name']
+
+"""
+This definition is similar to the existing Content table. It will be similar to that table and should eventually
+take its place once all front-end code is finished tying into it. 
+"""
+class ContentNew(models.Model):
+
+    def set_original_name(self, file_name):
+        return os.path.join("contents", file_name)
+
 
 
 class Content(models.Model):
