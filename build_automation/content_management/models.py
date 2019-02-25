@@ -4,12 +4,89 @@ from django.db import models
 from django.urls import reverse  # Used to generate URLs by reversing the URL patterns
 
 
+# Defines the models for the database tables
 class AbstractTag(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=2000, null=True)
 
     class Meta:
         abstract = True
+
+
+class Title(AbstractTag):
+    title = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['title']
+
+
+class FileName(AbstractTag):
+    fileName = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['fileName']
+
+
+class Description(AbstractTag):
+    description = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['description']
+
+
+class Format(AbstractTag):
+    description = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['description']
+
+
+class LibraryVersion(AbstractTag):
+    version = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['version']
+
+
+class Audience(AbstractTag):
+    audience = models.CharField(max_length=100, unique=True)
+    class Meta:
+        ordering = ['audience']
+
+
+class ReadingLevel(AbstractTag):
+    readingLevel = models.IntegerField()
+
+    class Meta:
+        ordering = ['readingLevel']
+
+
+class MainSubject(AbstractTag):
+    mainSubject = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['mainSubject']
+
+
+class RightsHolder(AbstractTag):
+    rights = models.CharField(max_length=1000, unique=False)
+
+    class Meta:
+        ordering = ['rights']
+
+
+class RightsStatement(AbstractTag):
+    rightsStatement = models.CharField(max_length=1000, unique=False)
+
+    class Meta:
+        ordering = ['rightsStatement']
+
+
+class Notes(AbstractTag):
+    notes = models.CharField(max_length=2000, unique=False)
+
+    class Meta:
+        ordering = ['notes']
 
 
 class Creator(AbstractTag):
@@ -37,7 +114,7 @@ class Coverage(AbstractTag):
         ordering = ['name']
 
 
-class Subject(AbstractTag):
+class Subject(AbstractTag): # OBSOLETE
 
     def get_absolute_url(self):
         return reverse('subject-detail', args=[str(self.id)])
@@ -49,7 +126,7 @@ class Subject(AbstractTag):
         ordering = ['name']
 
 
-class Keyword(AbstractTag):
+class Keyword(AbstractTag):  # OBSOLETE
 
     def get_absolute_url(self):
         return reverse('keyword-detail', args=[str(self.id)])
@@ -61,7 +138,7 @@ class Keyword(AbstractTag):
         ordering = ['name']
 
 
-class Workarea(AbstractTag):
+class Workarea(AbstractTag):  # OBSOLETE
 
     def get_absolute_url(self):
         return reverse('workarea-detail', args=[str(self.id)])
@@ -240,6 +317,7 @@ class Build(models.Model):
     Representation of the build of library version. Only one record will be present, since we need to have only the
     latest build.
     """
+
     class TaskState:
         RUNNING = 1
         FINISHED = 2
