@@ -1,18 +1,22 @@
 import React from 'react';
 import {APP_URLS} from "./url";
 import axios from 'axios';
-import LinearProgress from 'material-ui/Progress/LinearProgress';
-import Grid from 'material-ui/Grid';
-import { withStyles } from "material-ui/styles";
-import Select from 'material-ui/Select';
-import { FormControl, FormControlLabel } from 'material-ui/Form';
-import { InputLabel } from 'material-ui/Input';
-import { MenuItem } from 'material-ui/Menu';
-import Paper from 'material-ui/Paper';
-import Radio, { RadioGroup } from 'material-ui/Radio';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
+import Select from '@material-ui/core/Select';
+import { FormControl, FormControlLabel } from '@material-ui/core';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import Chart from 'chart.js';
+import {Doughnut} from 'react-chartjs-2';
 
-
+/*
+* Default styles for the diskspace page and graphic
+*/
 const styles = {
     root: {
     flexGrow: 1
@@ -32,8 +36,9 @@ const styles = {
     }
 };
 
-var DoughnutChart = require("react-chartjs").Doughnut;
-
+/*
+* Constructor for diskspace page
+*/
 class DiskSpace extends React.Component {
     constructor(props) {
         super(props);
@@ -44,11 +49,14 @@ class DiskSpace extends React.Component {
             name: "",
             value: '0',
         };
-        this.unit = " MB"
+        this.unit = " MB";
         this.handleChange = this.handleChange.bind(this);
         this.changeView = this.changeView.bind(this);
     }
 
+    /*
+    * Handle the change in units(MB or GB)
+    */
     handleChange(event) {
         this.setState({ multiplier: event.target.value, [event.target.name]: event.target.value });
         if(event.target.value == 1048576) {
@@ -59,21 +67,31 @@ class DiskSpace extends React.Component {
         }
     }
 
+    /*
+    * Update the page
+    */
     changeView(event) {
         this.setState({value: event.target.value});
 
     }
 
+    /*
+    * Mount the data gathered from the drive(s)
+    */
     componentDidMount() {
         this.loadData();
     }
+
+    /*
+    * Get data from the drive(s)
+    */
     loadData() {
         const that = this;
         axios
             .get(APP_URLS.DISKSPACE, {responseType: 'json'})
             .then((response) => {
-                this.used = response.data.total_space - response.data.available_space
-                this.avail = response.data.available_space
+                this.used = response.data.total_space - response.data.available_space;
+                this.avail = response.data.available_space;
                 this.setState({completed: 100*(response.data.total_space-response.data.available_space)/response.data.total_space});
             })
             .catch((error) => {
@@ -82,13 +100,16 @@ class DiskSpace extends React.Component {
             });
     }
 
+    /*
+    * Render class to load all the graphics
+    */
     render() {
         const { classes } = this.props;
         var options = {
             percentageInnerCutout: 50,
             responsive: true,
             animationEasing : 'easeOutBack',
-        }
+        };
 
         return (
             <div className={classes.root}>
@@ -130,6 +151,9 @@ class DiskSpace extends React.Component {
                         <h4>Used: {(this.used/this.state.multiplier).toFixed(2)}{this.unit}</h4>
                     </Grid>
                     <Grid item xs>
+                        /*
+                        * Bar graph
+                        */
                         <LinearProgress
                             style={{height: '45px'}}
                             variant="determinate"
@@ -149,7 +173,10 @@ class DiskSpace extends React.Component {
                     <Grid item xs/>
                     <Grid item xs={6}>
                     <h5 align="center">Hover over the Doughnut to view the values</h5>
-                        <DoughnutChart data={[
+                        /*
+                        * Show the data in a doughnut graph
+                        */
+                        <Doughnut data={[
                           {
                             value: (this.used/this.state.multiplier).toFixed(2),
                             color: '#F7464A',
