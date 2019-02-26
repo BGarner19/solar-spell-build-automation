@@ -207,6 +207,7 @@ class Cataloger(AbstractTag):
     class Meta:
         ordering = ['name']
 
+
 """
 This definition is similar to the existing Content table. It will be similar to that table and should eventually
 take its place once all front-end code is finished tying into it. 
@@ -216,6 +217,45 @@ class ContentNew(models.Model):
     def set_original_name(self, file_name):
         return os.path.join("contents", file_name)
 
+    name = models.CharField(max_length=300)
+
+    description = models.TextField()
+
+    # This is the file that was uploaded to the server by the librarian
+    content_file = models.FileField("File", upload_to=set_original_name)
+
+    updated_time = models.DateField(
+        "Content updated on",
+        help_text='Date when the piece of content was last updated by the librarian.'
+    )
+
+    last_uploaded_time = models.DateTimeField(
+        "Last Updated On",
+        editable=False,
+        help_text='Date and Time when the file was uploaded.'
+    )
+
+    checksum = models.SlugField(
+        "SHA256 CheckSum",
+        max_length=65,
+        editable=False,
+        help_text='The SHA256 CheckSum of the uploaded file.'
+    )
+
+    content_file_uploaded = False
+
+    def _init_(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.original_file = self.content_file
+
+    def __str__(self):
+        return "ContentNew[{}]".format(self.name)
+
+    def get_absolute_url(self):
+        return reverse('content-new-detail', args=[self.pk])
+
+    class Meta:
+        ordering = ['pk']
 
 
 class Content(models.Model):
