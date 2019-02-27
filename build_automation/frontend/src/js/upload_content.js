@@ -1,19 +1,21 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import AppBar from 'material-ui/AppBar';
-import Typography from 'material-ui/Typography';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
 import AutoCompleteWithChips from './autocomplete.js';
-import TextField from 'material-ui/TextField';
+import TextField from '@material-ui/core/TextField';
 import { DatePicker } from 'material-ui-pickers';
 import {APP_URLS, get_url} from "./url";
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from '@material-ui/core/Snackbar';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
-import {ChevronLeft, ChevronRight} from 'material-ui-icons';
+import {MuiPickersUtilsProvider} from 'material-ui-pickers';
+import {ChevronLeft, ChevronRight} from '@material-ui/icons';
 import axios from 'axios';
 import {buildMapFromArray} from "./utils";
-
+/*
+* Default style for upload content
+*/
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -31,7 +33,9 @@ const styles = theme => ({
     },
 });
 
-
+/*
+* Upload content constructor
+*/
 class UploadContent extends React.Component{
     constructor(props) {
         super(props);
@@ -81,6 +85,9 @@ class UploadContent extends React.Component{
         this.saveTag=this.saveTag.bind(this);
         this.saveCallback=props.onSave.bind(this);
     }
+    /*
+    * Makes a tag map with tag IDs
+    */
     buildTagIdTagsMap(tags) {
         // Builds a map of <Tag Id> - Tag map for each tag type.
         const tagIdTagMap = {};
@@ -89,6 +96,9 @@ class UploadContent extends React.Component{
         });
         return tagIdTagMap;
     }
+    /*
+    * Makes a tag map with tag names
+    */
     buildTagNameTagMap(tags) {
         const tagNameTagMap = {};
         Object.keys(tags).forEach(eachTagType => {
@@ -96,6 +106,9 @@ class UploadContent extends React.Component{
         });
         return tagNameTagMap;
     }
+    /*
+    * Grab names from tags to give options for autocompletion
+    */
     getAutoCompleteLabelsFromTagIds(boardInfo, tagIdsTagsMap) {
         const retval = {};
         Object.keys(tagIdsTagsMap).forEach(eachTagType => {
@@ -109,9 +122,16 @@ class UploadContent extends React.Component{
         });
         return retval;
     }
+    /*
+    * Load all the data
+    * loadData should be used(Will investigate later)
+    */
     componentDidMount() {
         // this.loadData()
     }
+    /*
+    * Populate all the fields with data(grab stored data)
+    */
     loadData() {
         const currInstance = this;
         axios.get(APP_URLS.TAG_LIST, {
@@ -125,6 +145,9 @@ class UploadContent extends React.Component{
             // TODO : Show the error message.
         });
     }
+    /*
+    * Handler for all text fields
+    */
     handleTextFieldUpdate(stateProperty, evt) {
         const targetVal = evt.target.value;
         this.setState((prevState, props) => {
@@ -136,9 +159,15 @@ class UploadContent extends React.Component{
             return newState;
         })
     }
+    /*
+    * Change the date data
+    */
     handleDateChange(date){
         this.setState({ selectedDate: date });
     };
+    /*
+    * Handler for an addition to tags
+    */
     handleTagAddition(tag, tagType){
         this.setState((prevState, props) => {
             const selectedTags = prevState[tagType];
@@ -149,6 +178,9 @@ class UploadContent extends React.Component{
             return value;
         })
     }
+    /*
+    * Handler for a deletion in tags
+    */
     handleTagDeletion(tag, tagType){
         this.setState((prevState, props) => {
             const selectedTags = prevState[tagType];
@@ -157,48 +189,69 @@ class UploadContent extends React.Component{
             return value;
         })
     }
+    /*
+    * Handle additions to all fields
+    */
     handleCreatorAddition(creator){
         this.handleTagAddition(creator, 'creators')
     }
+
     handleCoverageAddition(coverage){
         this.handleTagAddition(coverage, 'coverages')
     }
+
     handleSubjectAddition(subject){
         this.handleTagAddition(subject, 'subjects')
     }
+
     handleKeywordAddition(keyword){
         this.handleTagAddition(keyword, 'keywords')
     }
+
     handleWorkareaAddition(workarea){
         this.handleTagAddition(workarea, 'workareas')
     }
+
     handleLanguageAddition(language){
         this.handleTagAddition(language, 'languages')
     }
+
     handleCatalogerAddition(cataloger){
         this.handleTagAddition(cataloger, 'catalogers')
     }
+    /*
+    * Handle deletion for all the fields
+    */
     handleCreatorDeletion(creator){
         this.handleTagDeletion(creator, 'creators')
     }
+
     handleCoverageDeletion(coverage){
         this.handleTagDeletion(coverage, 'coverages')
     }
+
     handleSubjectDeletion(subject){
         this.handleTagDeletion(subject, 'subjects')
     }
+
     handleKeywordDeletion(keyword){
         this.handleTagDeletion(keyword, 'keywords')
     }
+
     handleWorkareaDeletion(workarea){
         this.handleTagDeletion(workarea, 'workareas')
     }
+
     handleLanguageDeletion(language){
         this.handleTagDeletion(language, 'languages')
     }
+
     handleCatalogerDeletion(cataloger){
         this.handleTagDeletion(cataloger, 'catalogers')
     }
+    /*
+    * Check for vaild state
+    */
     is_valid_state(is_save) {
         var hasErrors = false;
         const fieldErrors = {};
@@ -215,6 +268,9 @@ class UploadContent extends React.Component{
         }
         return !hasErrors;
     }
+    /*
+    * Get tags from the tags map
+    */
     getSelectedTags() {
         const tagTypeSelectedTagsMap = {};
         Object.keys(this.props.allTags).forEach(eachTagType => {
@@ -222,6 +278,9 @@ class UploadContent extends React.Component{
         });
         return tagTypeSelectedTagsMap;
     }
+    /*
+    * Match a tag based off of name and get its ID
+    */
     getSelectedTagsIdsFromName(tagType) {
         const matchingTagIds = [];
         this.state[tagType].forEach(eachLabel => {
@@ -229,6 +288,9 @@ class UploadContent extends React.Component{
         });
         return matchingTagIds;
     }
+    /*
+    * Format the date accordingly
+    */
     formatDate(input) {
         const year = input.getFullYear();
         let month = input.getMonth()+1;
@@ -241,6 +303,9 @@ class UploadContent extends React.Component{
         }
         return year + '-' + month + '-' + date;
     }
+    /*
+    * Save the content whether it be an edit or new upload
+    */
     saveContent(evt) {
         if (!this.is_valid_state(!(this.state.id > 0))) {
             // If it is in an invalid state, do not proceed with the save operation.
@@ -298,7 +363,9 @@ class UploadContent extends React.Component{
             });
         }
     }
-
+    /*
+    * Method for selecting a file from the file screen
+    */
     handleFileSelection(evt) {
         evt.persist();
         const file = evt.target.files[0];
@@ -315,7 +382,9 @@ class UploadContent extends React.Component{
             return newState;
         });
     }
-
+    /*
+    * Save new tag made by hte upload process
+    */
     saveTag(tagName, url, tagType){
         const payload = {name: tagName, description: tagName};
         const currentInstance = this;
@@ -345,12 +414,14 @@ class UploadContent extends React.Component{
             });
         });
     }
-
+    /*
+    * Render function for upload page
+    */
     render(){
         return (
             <Grid item xs={8}>
                 <AppBar position="static" style={{ height: '50px', margin: 'auto'}}>
-                    <Typography gutterBottom variant="subheading" style={{color: '#ffffff'}}>
+                    <Typography gutterBottom variant="subtitle1" style={{color: '#ffffff'}}>
 
                     </Typography>
                 </AppBar>
@@ -370,14 +441,14 @@ class UploadContent extends React.Component{
                 <input
                     accept="*"
                     className={'hidden'}
-                    id="raised-button-file"
+                    id="upload-file"
                     multiple
                     type="file"
                     ref={input => {this.fileInput = input;}}
                     onChange={this.handleFileSelection}
                 />
-                <label htmlFor="raised-button-file">
-                    <Button variant="raised" component="span">
+                <label htmlFor="upload-file">
+                    <Button variant="contained" component="span">
                         Browse
                     </Button>
                 </label>
@@ -412,7 +483,7 @@ class UploadContent extends React.Component{
                     />
                 </MuiPickersUtilsProvider>
                 <div style={{marginTop: '20px'}}> </div>
-                <Typography gutterBottom variant="subheading">
+                <Typography gutterBottom variant="subtitle1">
                     Creator(s)
                 </Typography>
                 <span>
@@ -421,7 +492,7 @@ class UploadContent extends React.Component{
                                                    onAddition={this.handleCreatorAddition} onDeletion={this.handleCreatorDeletion}/>
                         </span>
                 <div style={{marginTop: '20px'}}> </div>
-                <Typography gutterBottom variant="subheading">
+                <Typography gutterBottom variant="subtitle1">
                     Coverage
                 </Typography>
                 <span>
@@ -430,7 +501,7 @@ class UploadContent extends React.Component{
                                                    onAddition={this.handleCoverageAddition} onDeletion={this.handleCoverageDeletion}/>
                         </span>
                 <div style={{marginTop: '20px'}}> </div>
-                <Typography gutterBottom variant="subheading">
+                <Typography gutterBottom variant="subtitle1">
                     Subject(s)
                 </Typography>
                 <span>
@@ -439,7 +510,7 @@ class UploadContent extends React.Component{
                                                    onAddition={this.handleSubjectAddition} onDeletion={this.handleSubjectDeletion}/>
                         </span>
                 <div style={{marginTop: '20px'}}> </div>
-                <Typography gutterBottom variant="subheading">
+                <Typography gutterBottom variant="subtitle1">
                     Keywords
                 </Typography>
                 <span>
@@ -448,7 +519,7 @@ class UploadContent extends React.Component{
                                                    onAddition={this.handleKeywordAddition} onDeletion={this.handleKeywordDeletion}/>
                         </span>
                 <div style={{marginTop: '20px'}}> </div>
-                <Typography gutterBottom variant="subheading">
+                <Typography gutterBottom variant="subtitle1">
                     Work Area(s)
                 </Typography>
                 <span>
@@ -457,7 +528,7 @@ class UploadContent extends React.Component{
                                                    onAddition={this.handleWorkareaAddition} onDeletion={this.handleWorkareaDeletion}/>
                         </span>
                 <div style={{marginTop: '20px'}}> </div>
-                <Typography gutterBottom variant="subheading">
+                <Typography gutterBottom variant="subtitle1">
                     Language
                 </Typography>
                 <span>
@@ -466,7 +537,7 @@ class UploadContent extends React.Component{
                                                    onAddition={this.handleLanguageAddition} onDeletion={this.handleLanguageDeletion}/>
                         </span>
                 <div style={{marginTop: '20px'}}> </div>
-                <Typography gutterBottom variant="subheading">
+                <Typography gutterBottom variant="subtitle1">
                     Cataloger
                 </Typography>
                 <span>
@@ -501,7 +572,7 @@ class UploadContent extends React.Component{
                     fullWidth
                     margin="normal"
                 />
-                <Button variant="raised" component="span" onClick={this.saveContent}>
+                <Button variant="contained" component="span" onClick={this.saveContent}>
                     Save
                 </Button>
 
@@ -514,17 +585,22 @@ class UploadContent extends React.Component{
                     open={Boolean(this.state.message)}
                     onClose={this.handleCloseSnackbar}
                     message={<span>{this.state.message}</span>}
-                    SnackbarContentProps={{
+                    ContentProps={{
                         "style": this.getErrorClass()
                     }}
                 />
             </Grid>
         )
     }
+    /*
+    * Method for error handling
+    */
     getErrorClass() {
         return this.state.messageType === "error" ? {backgroundColor: '#B71C1C', fontWeight: 'normal'} : {};
     }
-
+    /*
+    * Close snackbar method
+    */
     handleCloseSnackbar() {
         this.setState({
             message: null,
@@ -532,4 +608,4 @@ class UploadContent extends React.Component{
         })
     }
 }
-module.exports = UploadContent;
+export default UploadContent;
