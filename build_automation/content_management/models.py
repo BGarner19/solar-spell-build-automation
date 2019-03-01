@@ -217,10 +217,6 @@ class ContentNew(models.Model):
     def set_original_name(self, file_name):
         return os.path.join("contents", file_name)
 
-    name = models.CharField(max_length=300)
-
-    description = models.TextField()
-
     # This is the file that was uploaded to the server by the librarian
     content_file = models.FileField("File", upload_to=set_original_name)
 
@@ -243,6 +239,24 @@ class ContentNew(models.Model):
     )
 
     content_file_uploaded = False
+
+    # Finalized metadata fields
+
+    title = models.OneToOneField(Title, on_delete=models.SET_NULL, null=True)
+    original_file_name = models.CharField(FileName, max_length=100)
+    description = models.OneToOneField(Description, on_delete=models.SET_NULL, null=True)
+    format = models.OneToOneField(Format, on_delete=models.SET_NULL, null=True)
+    library_version = models.OneToOneField(LibraryVersion, on_delete=models.SET_NULL, null=True)
+    audience = models.ManyToManyField(Audience, on_delete=models.SET_NULL, null=True)
+    reading_level = models.OneToOneField(ReadingLevel, on_delete=models.SET_NULL, null=True)
+    main_subject = models.OneToOneField(MainSubject, on_delete=models.SET_NULL, null=True)
+    rights_holder = models.OneToOneField(RightsHolder, on_delete=models.SET_NULL, null=True)
+    rights_statement = models.OneToOneField(RightsStatement, on_delete=models.SET_NULL, null=True)
+    notes = models.ManyToManyField(Notes, on_delete=models.SET_NULL, null=True)
+    creators = models.ManyToManyField(Creator)
+    coverage = models.ForeignKey(Coverage, on_delete=models.SET_NULL, null=True)
+    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
+    cataloger = models.ForeignKey(Cataloger, on_delete=models.SET_NULL, null=True)
 
     def _init_(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
