@@ -8,6 +8,9 @@ import {APP_URLS, get_url} from "./url";
 import Snackbar from '@material-ui/core/Snackbar';
 import axios from 'axios';
 
+/*
+* Default styles for bulk upload page
+*/
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -53,8 +56,8 @@ class BulkUploadContent extends React.Component{
         this.saveCallback=props.onSave.bind(this);
     }
 
-    /*	TODO: Insert information about what this method does.
-
+    /*
+    * Build a tag map based off of tag names
     */
     buildTagNameTagMap(tags) {
         const tagNameTagMap = {};
@@ -66,8 +69,8 @@ class BulkUploadContent extends React.Component{
         return tagNameTagMap;
     }
 
-    /*	TODO: Insert information about what this method does.
-
+    /*
+    * Build a tag map based off of tag IDs
     */
     buildTagIdTagsMap(tags) {
         // Builds a map of <Tag Id> - Tag map for each tag type.
@@ -78,8 +81,8 @@ class BulkUploadContent extends React.Component{
         return tagIdTagMap;
     }
 
-    /*	TODO: Insert information about what this method does.
-
+    /*
+    * Components mounted load data into components(usually)
     */
     componentDidMount() {
         //this.loadData()
@@ -329,7 +332,9 @@ class BulkUploadContent extends React.Component{
             return newState;
         });
     }
-
+    /*
+    * Render function for bulk upload
+    */
     render(){
         //need to add components or hidden value fields with meta information as null
         return (
@@ -390,10 +395,15 @@ class BulkUploadContent extends React.Component{
             </Grid>
         )
     }
+    /*
+    * Class to handle errors from this file
+    */
     getErrorClass() {
         return this.state.messageType === "error" ? {backgroundColor: '#B71C1C', fontWeight: 'normal'} : {};
     }
-
+    /*
+    * Close snackbar method
+    */
     handleCloseSnackbar() {
         this.setState({
             message: null,
