@@ -208,10 +208,8 @@ class Cataloger(AbstractTag):
         ordering = ['name']
 
 
-"""
-This definition is similar to the existing Content table. It will be similar to that table and should eventually
-take its place once all front-end code is finished tying into it. 
-"""
+# This definition is similar to the existing Content table. It will be similar to that table and should eventually
+# take its place once all front-end code is finished tying into it.
 class ContentNew(models.Model):
 
     def set_original_name(self, file_name):
@@ -272,7 +270,7 @@ class ContentNew(models.Model):
         ordering = ['pk']
 
 
-class Content(models.Model):
+class Content(models.Model): # OBSOLETE
 
     def set_original_name(self, file_name):
         self.original_file_name = file_name
@@ -361,8 +359,66 @@ class DirectoryLayout(models.Model):
     class Meta:
         ordering = ['pk']
 
+# This directory class takes the place of the old directory model which decides which tags should be
+# present in the content.
+class DirectoryNew(models.Model):
+    def set_original_name(self, file_name):
+        self.original_file_name = file_name
+        return os.path.join("banners", "folders", file_name)
 
-class Directory(models.Model):
+    name = models.CharField(max_length=100)
+    dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True)
+    banner_file = models.FileField(upload_to=set_original_name, null=True)
+    original_file_name = models.CharField(max_length=200, null=True)
+    individual_files = models.ManyToManyField(ContentNew, related_name='individual_files')
+
+    titles = models.ManyToManyField(Title)
+    file_names = models.ManyToManyField(FileName)
+    descriptions = models.ManyToManyField(Description)
+    formats = models.ManyToManyField(Format)
+    library_versions = models.ManyToManyField(LibraryVersion)
+    audiences = models.ManyToManyField(Audience)
+    reading_levels = models.ManyToManyField(ReadingLevel)
+    main_subjects = models.ManyToManyField(MainSubject)
+    rights_holders = models.ManyToManyField(RightsHolder)
+    rights_statements = models.ManyToManyField(RightsStatement)
+    notes = models.ManyToManyField(Notes)
+    creators = models.ManyToManyField(Creator)
+    coverages = models.ManyToManyField(Coverage)
+    languages = models.ManyToManyField(Language)
+    catalogers = models.ManyToManyField(Cataloger)
+
+    titles_need_all = models.BooleanField(default=False)
+    file_names_need_all = models.BooleanField(default=True)
+    descriptions_need_all = models.BooleanField(default=False)
+    formats_need_all = models.BooleanField(default=False)
+    library_versions_need_all = models.BooleanField(default=False)
+    audiences_need_all = models.BooleanField(default=False)
+    reading_levels_need_all = models.BooleanField(default=False)
+    main_subjects_need_all = models.BooleanField(default=False)
+    rights_holders_need_all = models.BooleanField(default=False)
+    rights_statements_need_all = models.BooleanField(default=False)
+    notes_need_all = models.BooleanField(default=False)
+    creators_need_all = models.BooleanField(default=False)
+    coverages_need_all = models.BooleanField(default=False)
+    languages_need_all = models.BooleanField(default=False)
+    catalogers_need_all = models.BooleanField(default=False)
+
+    banner_file_uploaded = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, *kwargs)
+        self.existing_banner_file = self.banner_file
+
+    def __str__(self):
+        return "DirectoryNew[{}]".format(self.name)
+
+    class Meta:
+        ordering = ['pk']
+
+
+class Directory(models.Model): #OBSOLETE
 
     def set_original_name(self, file_name):
         self.original_file_name = file_name
