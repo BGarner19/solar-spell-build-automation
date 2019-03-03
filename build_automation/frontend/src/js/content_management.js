@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import UploadContent from './upload_content';
 import Snackbar from '@material-ui/core/Snackbar';
 import BulkUploadContent from './bulk_upload_content';
+import BulkMetadataUpload from './bulk_metadata_upload';
 import FileListComponent from './file_list_component';
 import {buildMapFromArray} from './utils';
 import {APP_URLS} from "./url";
@@ -242,6 +243,29 @@ class ContentManagement extends React.Component{
         })
     }
 
+       uploadBulkMetadata() {
+        this.setState({
+            currentView: 'bulkMetadataUpload',
+			content: {
+                id: -1,
+                name: "",
+                description: "",
+                creators: [],
+                coverages: [],
+                subjects: [],
+                keywords: [],
+                workareas: [],
+                languages: [],
+                catalogers: [],
+                updatedDate: new Date(),
+                source: "",
+                copyright: "",
+                rightsStatement: "",
+                originalFileName: ""
+            }
+        })
+    }
+
     handleContentEdit(content){
         this.setState({
             currentView: 'upload',
@@ -286,6 +310,11 @@ class ContentManagement extends React.Component{
                         <Button variant="raised" color="primary" onClick={e => {this.uploadBulkFiles()}}>
                             Express Loading
                         </Button>
+                         <div style={{marginTop: '20px'}}> </div>
+                        <Button variant="raised" color="primary" onClick={e => {this.uploadBulkMetadata()}}>
+                            Metadata Loading
+                        </Button>
+                        
                     </Grid>
 
                     <Grid item xs={8}>
@@ -297,8 +326,12 @@ class ContentManagement extends React.Component{
                                                                                                  content={this.state.content}/>}
 
                         {this.state.isLoaded && this.state.currentView === 'bulkUploadContent' && <BulkUploadContent onSave={this.saveContentCallbackTwo} 
-						/* content={this.state.content} *//>}
-						
+
+						content={this.state.content} />}
+                        
+                        {this.state.isLoaded && this.state.currentView === 'bulkMetadataUpload' && <BulkMetadataUpload
+						content={this.state.content} />}
+
                         {!this.state.isLoaded && 'loading'}
                     </Grid>
                 </Grid>
