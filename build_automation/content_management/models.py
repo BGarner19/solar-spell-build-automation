@@ -13,6 +13,7 @@ class AbstractTag(models.Model):
         abstract = True
 
 
+# Title of the content
 class Title:
     title = models.CharField(max_length=100, unique=True)
 
@@ -23,6 +24,7 @@ class Title:
         ordering = ['title']
 
 
+# File name of the content. Used to match with uploaded content.
 class FileName:
     fileName = models.CharField(max_length=100, unique=True)
 
@@ -33,6 +35,7 @@ class FileName:
         ordering = ['fileName']
 
 
+# Creator of the content. May include authors, companies, organizations, etc.
 class Creator:
     creator = models.CharField(max_length=300, unique=True)
 
@@ -46,8 +49,9 @@ class Creator:
         ordering = ['creator']
 
 
+# Description of the content
 class Description:
-    description = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=5000, unique=True)
 
     def get_absolute_url(self):
         return reverse('description-detail', args=[str(self.id)])
@@ -56,6 +60,7 @@ class Description:
         ordering = ['description']
 
 
+# Format of the piece of content. May be in formats such as mp4, pdf, mp3, or "NoFormat"
 class Format:
     format = models.CharField(max_length=100, unique=True)
 
@@ -66,6 +71,7 @@ class Format:
         ordering = ['format']
 
 
+# Coverage of the content; specifically spatial coverage. Essentially the area/location that the content discusses.
 class Coverage:
 
     coverage = models.CharField(max_length=300, unique=True)
@@ -80,6 +86,7 @@ class Coverage:
         ordering = ['coverage']
 
 
+# The main subject of the content. Ex: Health, Math, Science, etc.
 class MainSubject:
     mainSubject = models.CharField(max_length=100, unique=True)
 
@@ -90,6 +97,7 @@ class MainSubject:
         ordering = ['mainSubject']
 
 
+# Version of the library that the content belongs to.
 class LibraryVersion:
     version = models.CharField(max_length=100, unique=True)
 
@@ -100,6 +108,7 @@ class LibraryVersion:
         ordering = ['version']
 
 
+# Audience of the content. Ex. Students, Teachers, etc.
 class Audience:
     audience = models.CharField(max_length=100, unique=True)
 
@@ -110,6 +119,7 @@ class Audience:
         ordering = ['audience']
 
 
+# Reading level of the content. Levels 0, 1, 2, 3.
 class ReadingLevel:
     readingLevel = models.IntegerField()
 
@@ -120,6 +130,7 @@ class ReadingLevel:
         ordering = ['readingLevel']
 
 
+# Language that the content is in.
 class Language:
 
     language = models.CharField(max_length=50, unique=True)
@@ -134,6 +145,7 @@ class Language:
         ordering = ['language']
 
 
+# Copyright statement or license for the content.
 class Copyright:
     copyright = models.CharField(max_length=1000, unique=False)
 
@@ -144,6 +156,7 @@ class Copyright:
         ordering = ['rights']
 
 
+# Statement of rights/licenses for the content.
 class RightsStatement:
     rightsStatement = models.CharField(max_length=1000, unique=False)
 
@@ -154,26 +167,10 @@ class RightsStatement:
         ordering = ['rightsStatement']
 
 
-class Notes:
-    notes = models.CharField(max_length=2000, unique=False)
-
-    def get_absolute_url(self):
-        return reverse('notes-detail', args=[str(self.id)])
-
-    class Meta:
-        ordering = ['notes']
-
-
-
-
-
-
-
-
-
-
-
+# The person who added the content to the catalog.
 class Cataloger:
+
+    cataloger = models.CharField(max_length=300, unique=True)
 
     def get_absolute_url(self):
         return reverse('cataloger-detail', args=[str(self.id)])
@@ -182,43 +179,18 @@ class Cataloger:
         return "Cataloger[{}]".format(self.name)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['cataloger']
 
 
-class Subject(AbstractTag): # OBSOLETE
-
-    def get_absolute_url(self):
-        return reverse('subject-detail', args=[str(self.id)])
-
-    def __str__(self):
-        return "Subject[{}]".format(self.name)
-
-    class Meta:
-        ordering = ['name']
-
-
-class Keyword(AbstractTag):  # OBSOLETE
+# Miscellaneous notes added by the content curators.
+class Notes:
+    notes = models.CharField(max_length=10000, unique=False)
 
     def get_absolute_url(self):
-        return reverse('keyword-detail', args=[str(self.id)])
-
-    def __str__(self):
-        return "Keyword[{}]".format(self.name)
+        return reverse('notes-detail', args=[str(self.id)])
 
     class Meta:
-        ordering = ['name']
-
-
-class Workarea(AbstractTag):  # OBSOLETE
-
-    def get_absolute_url(self):
-        return reverse('workarea-detail', args=[str(self.id)])
-
-    def __str__(self):
-        return "Workarea[{}]".format(self.name)
-
-    class Meta:
-        ordering = ['name']
+        ordering = ['notes']
 
 
 # This definition is similar to the existing Content table. It will be similar to that table and should eventually
@@ -283,96 +255,6 @@ class ContentNew(models.Model):
         ordering = ['pk']
 
 
-class Content(models.Model): # OBSOLETE
-
-    def set_original_name(self, file_name):
-        self.original_file_name = file_name
-        return os.path.join("contents", file_name)
-
-    """
-    A content is the representation of a file.
-    """
-    name = models.CharField(max_length=300)
-
-    description = models.TextField()
-
-    # The Actual File
-    content_file = models.FileField("File", upload_to=set_original_name)
-
-    updated_time = models.DateField(
-        "Content updated on",
-        help_text='Date when the content was last updated'
-    )
-
-    last_uploaded_time = models.DateTimeField(
-        "Last updated on",
-        editable=False,
-        help_text='Date & Time when the file was uploaded'
-    )
-
-    # SHA-256 Checksum of the latest updated file.
-    checksum = models.SlugField(
-        "SHA256 Sum",
-        max_length=65,
-        editable=False,
-        help_text='SHA256 Sum of the file uploaded recently.'
-    )
-
-    content_file_uploaded = False
-
-    creators = models.ManyToManyField(Creator)
-    coverage = models.ForeignKey(Coverage, on_delete=models.SET_NULL, null=True)
-    subjects = models.ManyToManyField(Subject)
-    keywords = models.ManyToManyField(Keyword)
-    workareas = models.ManyToManyField(Workarea)
-    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
-    cataloger = models.ForeignKey(Cataloger, on_delete=models.SET_NULL, null=True)
-    original_file_name = models.CharField(max_length=300, null=True)
-    source = models.CharField(max_length=2000, null=True)
-    copyright = models.CharField(max_length=500, null=True)
-    rights_statement = models.TextField(null=True)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.original_file = self.content_file
-
-    def __str__(self):
-        return "Content[{}]".format(self.name)
-
-    def get_absolute_url(self):
-        return reverse('content-detail', args=[self.pk])
-
-    class Meta:
-        ordering = ['pk']
-
-
-class DirectoryLayout(models.Model):
-
-    def set_original_name(self, file_name):
-        self.original_file_name = file_name
-        return os.path.join("banners", "libversions", file_name)
-
-    """
-    The Directory Layout for each build.
-    """
-    name = models.CharField(max_length=100, unique=True)
-    description = models.CharField(max_length=2000, null=True)
-    banner_file = models.FileField(upload_to=set_original_name)
-    original_file_name = models.CharField(max_length=200, null=True)
-
-    banner_file_uploaded = False
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.existing_banner_file = self.banner_file
-
-    def __str__(self):
-        return "DirectoryLayout[{}]".format(self.name)
-
-    class Meta:
-        ordering = ['pk']
-
-
 # This directory class takes the place of the old directory model which decides which tags should be
 # present in the content.
 # class DirectoryNew(models.Model):
@@ -431,55 +313,6 @@ class DirectoryLayout(models.Model):
 #     class Meta:
 #         ordering = ['pk']
 
-
-class Directory(models.Model): #OBSOLETE
-
-    def set_original_name(self, file_name):
-        self.original_file_name = file_name
-        return os.path.join("banners", "folders", file_name)
-
-    """
-    Representation of the directory for each build.
-    """
-    name = models.CharField(max_length=100)
-    dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True)
-    banner_file = models.FileField(upload_to=set_original_name, null=True)
-    original_file_name = models.CharField(max_length=200, null=True)
-    individual_files = models.ManyToManyField(Content, related_name='individual_files')
-
-    # Tags
-    creators = models.ManyToManyField(Creator)
-    coverages = models.ManyToManyField(Coverage)
-    subjects = models.ManyToManyField(Subject)
-    keywords = models.ManyToManyField(Keyword)
-    workareas = models.ManyToManyField(Workarea)
-    languages = models.ManyToManyField(Language)
-    catalogers = models.ManyToManyField(Cataloger)
-
-    # Whether All of the specificed tags should be present in the content, or atleast one is needed.
-    # Represent ALL or ANY of the UI state.
-    creators_need_all = models.BooleanField(default=False)
-    coverages_need_all = models.BooleanField(default=False)
-    subjects_need_all = models.BooleanField(default=False)
-    keywords_need_all = models.BooleanField(default=False)
-    workareas_need_all = models.BooleanField(default=False)
-    languages_need_all = models.BooleanField(default=False)
-    catalogers_need_all = models.BooleanField(default=False)
-
-    banner_file_uploaded = False
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.existing_banner_file = self.banner_file
-
-    def __str__(self):
-        return "Directory[{}]".format(self.name)
-
-    class Meta:
-        ordering = ['pk']
-
-
 class Build(models.Model):
     """
     Representation of the build of library version. Only one record will be present, since we need to have only the
@@ -513,3 +346,174 @@ class Build(models.Model):
 
     class Meta:
         ordering = ['pk']
+
+
+# class Content(models.Model): # OBSOLETE
+#
+#     def set_original_name(self, file_name):
+#         self.original_file_name = file_name
+#         return os.path.join("contents", file_name)
+#
+#     """
+#     A content is the representation of a file.
+#     """
+#     name = models.CharField(max_length=300)
+#
+#     description = models.TextField()
+#
+#     # The Actual File
+#     content_file = models.FileField("File", upload_to=set_original_name)
+#
+#     updated_time = models.DateField(
+#         "Content updated on",
+#         help_text='Date when the content was last updated'
+#     )
+#
+#     last_uploaded_time = models.DateTimeField(
+#         "Last updated on",
+#         editable=False,
+#         help_text='Date & Time when the file was uploaded'
+#     )
+#
+#     # SHA-256 Checksum of the latest updated file.
+#     checksum = models.SlugField(
+#         "SHA256 Sum",
+#         max_length=65,
+#         editable=False,
+#         help_text='SHA256 Sum of the file uploaded recently.'
+#     )
+#
+#     content_file_uploaded = False
+#
+#     creators = models.ManyToManyField(Creator)
+#     coverage = models.ForeignKey(Coverage, on_delete=models.SET_NULL, null=True)
+#     subjects = models.ManyToManyField(Subject)
+#     keywords = models.ManyToManyField(Keyword)
+#     workareas = models.ManyToManyField(Workarea)
+#     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
+#     cataloger = models.ForeignKey(Cataloger, on_delete=models.SET_NULL, null=True)
+#     original_file_name = models.CharField(max_length=300, null=True)
+#     source = models.CharField(max_length=2000, null=True)
+#     copyright = models.CharField(max_length=500, null=True)
+#     rights_statement = models.TextField(null=True)
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.original_file = self.content_file
+#
+#     def __str__(self):
+#         return "Content[{}]".format(self.name)
+#
+#     def get_absolute_url(self):
+#         return reverse('content-detail', args=[self.pk])
+#
+#     class Meta:
+#         ordering = ['pk']
+
+# class DirectoryLayout(models.Model):
+#
+#     def set_original_name(self, file_name):
+#         self.original_file_name = file_name
+#         return os.path.join("banners", "libversions", file_name)
+#
+#     """
+#     The Directory Layout for each build.
+#     """
+#     name = models.CharField(max_length=100, unique=True)
+#     description = models.CharField(max_length=2000, null=True)
+#     banner_file = models.FileField(upload_to=set_original_name)
+#     original_file_name = models.CharField(max_length=200, null=True)
+#
+#     banner_file_uploaded = False
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.existing_banner_file = self.banner_file
+#
+#     def __str__(self):
+#         return "DirectoryLayout[{}]".format(self.name)
+#
+#     class Meta:
+#         ordering = ['pk']
+
+# class Directory(models.Model): #OBSOLETE
+#
+#     def set_original_name(self, file_name):
+#         self.original_file_name = file_name
+#         return os.path.join("banners", "folders", file_name)
+#
+#     """
+#     Representation of the directory for each build.
+#     """
+#     name = models.CharField(max_length=100)
+#     dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)
+#     parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True)
+#     banner_file = models.FileField(upload_to=set_original_name, null=True)
+#     original_file_name = models.CharField(max_length=200, null=True)
+#     individual_files = models.ManyToManyField(Content, related_name='individual_files')
+#
+#     # Tags
+#     creators = models.ManyToManyField(Creator)
+#     coverages = models.ManyToManyField(Coverage)
+#     subjects = models.ManyToManyField(Subject)
+#     keywords = models.ManyToManyField(Keyword)
+#     workareas = models.ManyToManyField(Workarea)
+#     languages = models.ManyToManyField(Language)
+#     catalogers = models.ManyToManyField(Cataloger)
+#
+#     # Whether All of the specificed tags should be present in the content, or atleast one is needed.
+#     # Represent ALL or ANY of the UI state.
+#     creators_need_all = models.BooleanField(default=False)
+#     coverages_need_all = models.BooleanField(default=False)
+#     subjects_need_all = models.BooleanField(default=False)
+#     keywords_need_all = models.BooleanField(default=False)
+#     workareas_need_all = models.BooleanField(default=False)
+#     languages_need_all = models.BooleanField(default=False)
+#     catalogers_need_all = models.BooleanField(default=False)
+#
+#     banner_file_uploaded = False
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.existing_banner_file = self.banner_file
+#
+#     def __str__(self):
+#         return "Directory[{}]".format(self.name)
+#
+#     class Meta:
+#         ordering = ['pk']
+
+
+# OLD CODE
+# class Keyword(AbstractTag):  # OBSOLETE
+#
+#     def get_absolute_url(self):
+#         return reverse('keyword-detail', args=[str(self.id)])
+#
+#     def __str__(self):
+#         return "Keyword[{}]".format(self.name)
+#
+#     class Meta:
+#         ordering = ['name']
+#
+#
+# class Workarea(AbstractTag):  # OBSOLETE
+#
+#     def get_absolute_url(self):
+#         return reverse('workarea-detail', args=[str(self.id)])
+#
+#     def __str__(self):
+#         return "Workarea[{}]".format(self.name)
+#
+#     class Meta:
+#         ordering = ['name']
+# class Subject(AbstractTag): # OBSOLETE
+#
+#     def get_absolute_url(self):
+#         return reverse('subject-detail', args=[str(self.id)])
+#
+#     def __str__(self):
+#         return "Subject[{}]".format(self.name)
+#
+#     class Meta:
+#         ordering = ['name']
