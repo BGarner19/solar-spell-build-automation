@@ -1,8 +1,10 @@
 import React from 'react';
 
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+/*
+* Constructor for DownloadBuild
+*/
 class DownloadBuild extends React.Component{
     constructor(props){
         super(props);
@@ -13,6 +15,9 @@ class DownloadBuild extends React.Component{
             download: props.build.download
         };
     }
+    /*
+    * Load all the data
+    */
     componentWillReceiveProps(props) {
         this.setState({
             name: props.build.name,
@@ -20,6 +25,9 @@ class DownloadBuild extends React.Component{
             download: props.build.download
         });
     }
+    /*
+    * Render the download page
+    */
     render(){
 
         return(
@@ -39,7 +47,7 @@ class DownloadBuild extends React.Component{
                   value={this.state.currTime || ''}
                   margin="normal"
                 />
-                <Button variant="raised" color="primary" onClick={evt => window.open(this.state.download, "_blank")}>
+                <Button variant="contained" color="primary" onClick={evt => window.open(this.state.download, "_blank")}>
                     Download Image
                 </Button>
             </div>
@@ -48,4 +56,4 @@ class DownloadBuild extends React.Component{
 
 }
 
-module.exports = DownloadBuild
+export default DownloadBuild;
