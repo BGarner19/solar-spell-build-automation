@@ -14,7 +14,7 @@ class AbstractTag(models.Model):
 
 
 # Title of the content
-class Title:
+class Title(models.Model):
     title = models.CharField(max_length=100, unique=True)
 
     def get_absolute_url(self):
@@ -25,7 +25,7 @@ class Title:
 
 
 # File name of the content. Used to match with uploaded content.
-class FileName:
+class FileName(models.Model):
     fileName = models.CharField(max_length=100, unique=True)
 
     def get_absolute_url(self):
@@ -36,7 +36,7 @@ class FileName:
 
 
 # Creator of the content. May include authors, companies, organizations, etc.
-class Creator:
+class Creator(models.Model):
     creator = models.CharField(max_length=300, unique=True)
 
     def get_absolute_url(self):
@@ -50,7 +50,7 @@ class Creator:
 
 
 # Description of the content
-class Description:
+class Description(models.Model):
     description = models.CharField(max_length=5000, unique=True)
 
     def get_absolute_url(self):
@@ -61,7 +61,8 @@ class Description:
 
 
 # Format of the piece of content. May be in formats such as mp4, pdf, mp3, or "NoFormat"
-class Format:
+class Format(models.Model):
+
     format = models.CharField(max_length=100, unique=True)
 
     def get_absolute_url(self):
@@ -72,7 +73,7 @@ class Format:
 
 
 # Coverage of the content; specifically spatial coverage. Essentially the area/location that the content discusses.
-class Coverage:
+class Coverage(models.Model):
 
     coverage = models.CharField(max_length=300, unique=True)
 
@@ -87,7 +88,7 @@ class Coverage:
 
 
 # The main subject of the content. Ex: Health, Math, Science, etc.
-class MainSubject:
+class MainSubject(models.Model):
     mainSubject = models.CharField(max_length=100, unique=True)
 
     def get_absolute_url(self):
@@ -98,7 +99,7 @@ class MainSubject:
 
 
 # Version of the library that the content belongs to.
-class LibraryVersion:
+class LibraryVersion(models.Model):
     version = models.CharField(max_length=100, unique=True)
 
     def get_absolute_url(self):
@@ -109,7 +110,7 @@ class LibraryVersion:
 
 
 # Audience of the content. Ex. Students, Teachers, etc.
-class Audience:
+class Audience(models.Model):
     audience = models.CharField(max_length=100, unique=True)
 
     def get_absolute_url(self):
@@ -120,7 +121,7 @@ class Audience:
 
 
 # Reading level of the content. Levels 0, 1, 2, 3.
-class ReadingLevel:
+class ReadingLevel(models.Model):
     readingLevel = models.IntegerField()
 
     def get_absolute_url(self):
@@ -131,7 +132,7 @@ class ReadingLevel:
 
 
 # Language that the content is in.
-class Language:
+class Language(models.Model):
 
     language = models.CharField(max_length=50, unique=True)
 
@@ -146,7 +147,7 @@ class Language:
 
 
 # Copyright statement or license for the content.
-class Copyright:
+class Copyright(models.Model):
     copyright = models.CharField(max_length=1000, unique=False)
 
     def get_absolute_url(self):
@@ -157,7 +158,7 @@ class Copyright:
 
 
 # Statement of rights/licenses for the content.
-class RightsStatement:
+class RightsStatement(models.Model):
     rightsStatement = models.CharField(max_length=1000, unique=False)
 
     def get_absolute_url(self):
@@ -168,7 +169,7 @@ class RightsStatement:
 
 
 # The person who added the content to the catalog.
-class Cataloger:
+class Cataloger(models.Model):
 
     cataloger = models.CharField(max_length=300, unique=True)
 
@@ -183,7 +184,7 @@ class Cataloger:
 
 
 # Miscellaneous notes added by the content curators.
-class Notes:
+class Notes(models.Model):
     notes = models.CharField(max_length=10000, unique=False)
 
     def get_absolute_url(self):
@@ -195,7 +196,7 @@ class Notes:
 
 # This definition is similar to the existing Content table. It will be similar to that table and should eventually
 # take its place once all front-end code is finished tying into it.
-class ContentNew(models.Model):
+class Content(models.Model):
 
     def set_original_name(self, file_name):
         return os.path.join("contents", file_name)
@@ -225,20 +226,20 @@ class ContentNew(models.Model):
 
     # Finalized metadata fields
 
-    title = models.OneToOneField(Title, on_delete=models.SET_NULL, null=True)
-    original_file_name = models.CharField(FileName, max_length=100)
-    description = models.OneToOneField(Description, on_delete=models.SET_NULL, null=True)
+    title = models.TextField()
+    original_file_name = models.TextField()
+    description = models.TextField()
     format = models.OneToOneField(Format, on_delete=models.SET_NULL, null=True)
     library_version = models.OneToOneField(LibraryVersion, on_delete=models.SET_NULL, null=True)
-    audience = models.ManyToManyField(Audience)
+    audience = models.OneToOneField(Audience, on_delete=models.SET_NULL, null=True)
     reading_level = models.OneToOneField(ReadingLevel, on_delete=models.SET_NULL, null=True)
-    main_subject = models.OneToOneField(MainSubject, on_delete=models.SET_NULL, null=True)
-    rights_holder = models.OneToOneField(RightsHolder, on_delete=models.SET_NULL, null=True)
-    rights_statement = models.OneToOneField(RightsStatement, on_delete=models.SET_NULL, null=True)
+    main_subject = models.ManyToManyField(MainSubject)
+    copyright = models.TextField()
+    rights_statement = models.TextField()
     notes = models.ManyToManyField(Notes)
     creators = models.ManyToManyField(Creator)
-    coverage = models.ForeignKey(Coverage, on_delete=models.SET_NULL, null=True)
-    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
+    coverage = models.ManyToManyField(Coverage)
+    language = models.ManyToManyField(Language)
     cataloger = models.ForeignKey(Cataloger, on_delete=models.SET_NULL, null=True)
 
     def _init_(self, *args, **kwargs):
