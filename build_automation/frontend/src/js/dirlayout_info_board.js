@@ -1,16 +1,23 @@
 import axios from 'axios';
 import React from 'react';
 
-import Button from 'material-ui/Button';
-import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } from 'material-ui/Dialog';
-import Snackbar from 'material-ui/Snackbar';
-import TextField from 'material-ui/TextField';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Snackbar from '@material-ui/core/Snackbar';
+import TextField from '@material-ui/core/TextField';
 
-import OpenInNew from 'material-ui-icons/OpenInNew';
+import OpenInNew from '@material-ui/icons/OpenInNew';
 
 import { DIRLAYOUT_SAVE_TYPE, HTTP_STATUS } from './constants.js';
 import { APP_URLS, get_url } from './url.js';
 
+/*
+* Constructor for DirectoryLayoutInfoBoard
+*/
 class DirlayoutInfoBoard extends React.Component {
     constructor(props) {
         super(props);
@@ -36,7 +43,9 @@ class DirlayoutInfoBoard extends React.Component {
         this.confirmDeleteDirLayout = this.confirmDeleteDirLayout.bind(this);
         this.closeConfirmDialog = this.closeConfirmDialog.bind(this);
     }
-
+    /*
+    * Each component will load the required files
+    */
     componentWillReceiveProps(props) {
         this.setState({
             id: props.boardData.id,
@@ -48,7 +57,9 @@ class DirlayoutInfoBoard extends React.Component {
             confirmDelete: false,
         });
     }
-
+    /*
+    * Update the value for the given text field
+    */
     handleTextFieldUpdate(stateProperty, evt) {
         const targetVal = evt.target.value;
         this.setState((prevState, props) => {
@@ -60,7 +71,9 @@ class DirlayoutInfoBoard extends React.Component {
             return newState;
         })
     }
-
+    /*
+    * Change the banner for the current library
+    */
     handleBannerSelection(evt) {
         evt.persist();
         const file = evt.target.files[0];
@@ -77,7 +90,9 @@ class DirlayoutInfoBoard extends React.Component {
             return newState;
         });
     }
-
+    /*
+    * Save changes to the current library
+    */
     saveDirLayout(evt) {
         if (!this.is_valid_state(!(this.state.id > 0))) {
             // If it is in an invalid state, do not proceed with the save operation.
@@ -138,7 +153,9 @@ class DirlayoutInfoBoard extends React.Component {
             })
         }
     }
-
+    /*
+    * Check to make sure all the required files are present
+    */
     is_valid_state(is_save) {
         var hasErrors = false;
         const fieldErrors = {};
@@ -159,7 +176,9 @@ class DirlayoutInfoBoard extends React.Component {
         }
         return !hasErrors;
     }
-
+    /*
+    * Clone a library
+    */
     cloneDirLayout(evt) {
         const targetUrl = get_url(APP_URLS.DIRLAYOUT_CLONE, {id: this.state.id});
         const currentInstance = this;
@@ -180,13 +199,17 @@ class DirlayoutInfoBoard extends React.Component {
             });
         })
     }
-
+    /*
+    * Send a confirmation message for deletion
+    */
     confirmDeleteDirLayout() {
         this.setState({
             confirmDelete: true
         })
     }
-
+    /*
+    * Delete a library
+    */
     deleteDirLayout() {
         const targetUrl = get_url(APP_URLS.DIRLAYOUT_DETAIL, {id:this.state.id});
         const currentInstance = this;
@@ -202,26 +225,30 @@ class DirlayoutInfoBoard extends React.Component {
             });
         });
     }
-
+    /*
+    * Confirm the user wishes to exit the current library
+    */
     closeConfirmDialog() {
         this.setState({confirmDelete: false})
     }
-
+    /*
+    * Render function for libraries page
+    */
     render() {
         return (
             <div>
-                <Button variant="raised" color="primary" onClick={this.saveDirLayout}>
+                <Button variant="contained" color="primary" onClick={this.saveDirLayout}>
                     Save
                 </Button>
                 {
                     this.state.id > 0 &&
-                    <Button variant="raised" color="primary" onClick={this.cloneDirLayout}>
+                    <Button variant="contained" color="primary" onClick={this.cloneDirLayout}>
                     Clone
                     </Button>
                 }
                 {
                     this.state.id > 0 &&
-                    <Button variant="raised" color="secondary" onClick={this.confirmDeleteDirLayout}>
+                    <Button variant="contained" color="secondary" onClick={this.confirmDeleteDirLayout}>
                     Delete
                     </Button>
                 }
@@ -264,7 +291,7 @@ class DirlayoutInfoBoard extends React.Component {
                     onChange={ this.handleBannerSelection }
                  />
                 <label htmlFor="raised-button-file">
-                    <Button variant="raised" component="span">
+                    <Button variant="contained" component="span">
                         Browse
                     </Button>
                 </label>
@@ -302,18 +329,22 @@ class DirlayoutInfoBoard extends React.Component {
                     open={Boolean(this.state.message)}
                     onClose={this.handleCloseSnackbar}
                     message={<span>{this.state.message}</span>}
-                    SnackbarContentProps={{
+                    ContentProps={{
                         "style": this.getErrorClass()
                     }}
                 />
             </div>
         );
     }
-
+    /*
+    * Handle errors
+    */
     getErrorClass() {
         return this.state.messageType === "error" ? {backgroundColor: '#B71C1C', fontWeight: 'normal'} : {};
     }
-
+    /*
+    * Close snackbar
+    */
     handleCloseSnackbar() {
         this.setState({
             message: null,
@@ -322,4 +353,4 @@ class DirlayoutInfoBoard extends React.Component {
     }
 }
 
-module.exports = DirlayoutInfoBoard;
+export default DirlayoutInfoBoard;
