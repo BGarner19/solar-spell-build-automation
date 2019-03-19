@@ -256,6 +256,48 @@ class Content(models.Model):
         ordering = ['pk']
 
 
+# The DirectoryLayout class defines the top level library versions
+class DirectoryLayout(models.Model):
+
+    def set_original_name(self, file_name):
+        self.original_file_name = file_name
+        return os.path.join("banners", "libversions", file_name)
+
+    banner_file_uploaded = False
+
+        banner_file_uploaded = False
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.existing_banner_file = self.banner_file
+
+        def __str__(self):
+            return "DirectoryLayout[{}]".format(self.name)
+
+        class Meta:
+            ordering = ['pk']
+
+# The Directory class defines the inner folders of the library version and supports nesting through the use of parent_id
+class Directory(models.Model):
+
+    def set_original_name(self, file_name):
+        self.original_file_name = file_name
+        return os.path.join("banners", "folders", file_name)
+
+    banner_file_uploaded = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.existing_banner_file = self.banner_file
+
+    def __str__(self):
+        return "Directory[{}]".format(self.name)
+
+    class Meta:
+        ordering = ['pk']
+
+
+
 # This directory class takes the place of the old directory model which decides which tags should be
 # present in the content.
 # class DirectoryNew(models.Model):
@@ -340,7 +382,7 @@ class Build(models.Model):
 
     task_state = models.IntegerField(choices=TASK_STATES)
     build_file = models.CharField(max_length=400, null=True)
-    dir_layout = models.ForeignKey(DirectoryLayout, on_delete=models.SET_NULL, null=True)
+#    dir_layout = models.ForeignKey(DirectoryLayout, on_delete=models.SET_NULL, null=True)
     completion_state = models.IntegerField(choices=BUILD_COMPLETION_STATES, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(null=True)
