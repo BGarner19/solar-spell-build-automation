@@ -1,13 +1,19 @@
 import React from 'react';
-import Typography from 'material-ui/Typography';
-import Chip from 'material-ui/Chip';
-import Button from 'material-ui/Button';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import Snackbar from 'material-ui/Snackbar';
-import { TableCell, TableRow } from 'material-ui/Table';
+import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Snackbar from '@material-ui/core/Snackbar';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 import AutoCompleteFilter from './autocomplete_filter.js';
-import Input from 'material-ui/Input';
-import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } from 'material-ui/Dialog';
+import Input from '@material-ui/core/Input';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import axios from 'axios';
 import { APP_URLS, get_url } from './url.js';
 
@@ -28,7 +34,9 @@ import {
 } from '@devexpress/dx-react-grid-material-ui';
 
 var __tagIdsTagsMap = {};
-
+/*
+* Format tags
+*/
 function ChippedTagsFormatter(input) {
     const {row, column, value} = input;
     if (!value){
@@ -47,11 +55,15 @@ function ChippedTagsFormatter(input) {
     }
     return allChips;
 }
-
+/*
+* What data type is the tag?
+*/
 function ChippedTagsTypeProvider(props) {
     return (<DataTypeProvider formatterComponent={ChippedTagsFormatter} {...props} />);
 }
-
+/*
+* Filter through an array of tags
+*/
 function filterThroughArray(value, filter) {
     if ( value && filter && Array.isArray(filter.value)) {
         if(!Array.isArray(value)) {
@@ -64,7 +76,9 @@ function filterThroughArray(value, filter) {
         return allTagsPresent;
     }
 }
-
+/*
+* Constructor for file list
+*/
 class FileListComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -107,12 +121,16 @@ class FileListComponent extends React.Component {
             {columnName: 'cataloger', predicate: filterThroughArray},
         ];
     }
-
+    /*
+    * Components will load data
+    */
     componentWillReceiveProps(props) {
         __tagIdsTagsMap = props.tagIdsTagsMap;
         this.setState({allFiles: props.allFiles})
     }
-
+    /*
+    * Right click options
+    */
     handleFilesRightClick(evt, row, menuName) {
         this.setState({
             [menuName]: {
@@ -123,7 +141,9 @@ class FileListComponent extends React.Component {
         });
         evt.preventDefault();
     }
-
+    /*
+    * Close menu
+    */
     handleMenuClose(evt, menuName) {
         this.setState({
             [menuName]: {
@@ -132,12 +152,16 @@ class FileListComponent extends React.Component {
             }
         });
     }
-
+    /*
+    * Rows
+    */
     tableRowComponent(obj, menuName)  {
         const {row, children} = obj;
         return(<tr onContextMenu={evt => this.handleFilesRightClick(evt, row, menuName)}>{children}</tr>);
     }
-
+    /*
+    * Delete a file
+    */
     deleteFile(file) {
         const targetUrl = get_url(APP_URLS.CONTENT_DETAIL, {id: file.id});
         const currentInstance = this;
@@ -149,17 +173,23 @@ class FileListComponent extends React.Component {
             console.error("Error in deleting the file ", error);
         });
     }
-
+    /*
+    * Confirm request for deletion
+    */
     confirmDeleteContent() {
         this.setState({
             confirmDelete: true
         })
     }
-
+    /*
+    * Abort confirmation
+    */
     closeConfirmDialog() {
         this.setState({confirmDelete: false})
     }
-
+    /*
+    * Get filtered items
+    */
     getFilterCellComponent(props) {
         const {filter, onFilter, column, filteringEnabled} = props;
         if (column.filterType === "autocomplete") {
@@ -182,11 +212,13 @@ class FileListComponent extends React.Component {
         );
     }
 
-
+    /*
+    * Render class for file list
+    */
     render() {
         return (
             <React.Fragment>
-                <Typography gutterBottom variant="headline" component="h2">
+                <Typography gutterBottom variant="h5" component="h2">
                     Select individual files
                 </Typography>
                 <Grid
@@ -276,17 +308,22 @@ class FileListComponent extends React.Component {
                     open={Boolean(this.state.message)}
                     onClose={this.handleCloseSnackbar}
                     message={<span>{this.state.message}</span>}
-                    SnackbarContentProps={{
+                    ContentProps={{
                         "style": this.getErrorClass()
                     }}
                 />
             </React.Fragment>
         );
     }
+    /*
+    * Error class
+    */
     getErrorClass() {
         return this.state.messageType === "error" ? {backgroundColor: '#B71C1C', fontWeight: 'normal'} : {};
     }
-
+    /*
+    * Close snackbar
+    */
     handleCloseSnackbar() {
         this.setState({
             message: null,
@@ -294,4 +331,4 @@ class FileListComponent extends React.Component {
         })
     }
 }
-module.exports = FileListComponent;
+export default FileListComponent;
