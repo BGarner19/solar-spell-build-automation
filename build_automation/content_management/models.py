@@ -265,17 +265,21 @@ class DirectoryLayout(models.Model):
 
     banner_file_uploaded = False
 
-        banner_file_uploaded = False
+    name = models.CharField(max_length=100, unique=True) # Name of the library version
+    description = models.CharField(max_length=5000, null=True) # Description of what the library version is for
+    banner_file = models.FileField(upload_to=set_original_name) # Banner file location for the entire version
+    original_file_name = models.CharField(max_length=500, null=True)
 
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.existing_banner_file = self.banner_file
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.existing_banner_file = self.banner_file
 
-        def __str__(self):
-            return "DirectoryLayout[{}]".format(self.name)
+    def __str__(self):
+        return "DirectoryLayout[{}]".format(self.name)
 
-        class Meta:
-            ordering = ['pk']
+    class Meta:
+        ordering = ['pk']
+
 
 # The Directory class defines the inner folders of the library version and supports nesting through the use of parent_id
 class Directory(models.Model):
@@ -295,7 +299,6 @@ class Directory(models.Model):
 
     class Meta:
         ordering = ['pk']
-
 
 
 # This directory class takes the place of the old directory model which decides which tags should be
@@ -389,95 +392,6 @@ class Build(models.Model):
 
     class Meta:
         ordering = ['pk']
-
-
-# class Content(models.Model): # OBSOLETE
-#
-#     def set_original_name(self, file_name):
-#         self.original_file_name = file_name
-#         return os.path.join("contents", file_name)
-#
-#     """
-#     A content is the representation of a file.
-#     """
-#     name = models.CharField(max_length=300)
-#
-#     description = models.TextField()
-#
-#     # The Actual File
-#     content_file = models.FileField("File", upload_to=set_original_name)
-#
-#     updated_time = models.DateField(
-#         "Content updated on",
-#         help_text='Date when the content was last updated'
-#     )
-#
-#     last_uploaded_time = models.DateTimeField(
-#         "Last updated on",
-#         editable=False,
-#         help_text='Date & Time when the file was uploaded'
-#     )
-#
-#     # SHA-256 Checksum of the latest updated file.
-#     checksum = models.SlugField(
-#         "SHA256 Sum",
-#         max_length=65,
-#         editable=False,
-#         help_text='SHA256 Sum of the file uploaded recently.'
-#     )
-#
-#     content_file_uploaded = False
-#
-#     creators = models.ManyToManyField(Creator)
-#     coverage = models.ForeignKey(Coverage, on_delete=models.SET_NULL, null=True)
-#     subjects = models.ManyToManyField(Subject)
-#     keywords = models.ManyToManyField(Keyword)
-#     workareas = models.ManyToManyField(Workarea)
-#     language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
-#     cataloger = models.ForeignKey(Cataloger, on_delete=models.SET_NULL, null=True)
-#     original_file_name = models.CharField(max_length=300, null=True)
-#     source = models.CharField(max_length=2000, null=True)
-#     copyright = models.CharField(max_length=500, null=True)
-#     rights_statement = models.TextField(null=True)
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.original_file = self.content_file
-#
-#     def __str__(self):
-#         return "Content[{}]".format(self.name)
-#
-#     def get_absolute_url(self):
-#         return reverse('content-detail', args=[self.pk])
-#
-#     class Meta:
-#         ordering = ['pk']
-
-# class DirectoryLayout(models.Model):
-#
-#     def set_original_name(self, file_name):
-#         self.original_file_name = file_name
-#         return os.path.join("banners", "libversions", file_name)
-#
-#     """
-#     The Directory Layout for each build.
-#     """
-#     name = models.CharField(max_length=100, unique=True)
-#     description = models.CharField(max_length=2000, null=True)
-#     banner_file = models.FileField(upload_to=set_original_name)
-#     original_file_name = models.CharField(max_length=200, null=True)
-#
-#     banner_file_uploaded = False
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.existing_banner_file = self.banner_file
-#
-#     def __str__(self):
-#         return "DirectoryLayout[{}]".format(self.name)
-#
-#     class Meta:
-#         ordering = ['pk']
 
 # class Directory(models.Model): #OBSOLETE
 #
