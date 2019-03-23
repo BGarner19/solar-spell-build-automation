@@ -1,11 +1,14 @@
 import React from 'react';
 
-import Grid from 'material-ui/Grid';
+import Grid from '@material-ui/core/Grid';
 import MakeBuildComponent from './make_build.js';
-import Paper from 'material-ui/Paper';
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import ViewBuildComponent from './view_build.js';
-
+/*
+* Constructor for Build Process
+*/
 class BuildProcessComponent extends React.Component{
   constructor(props) {
         super(props);
@@ -15,11 +18,15 @@ class BuildProcessComponent extends React.Component{
         };
         this.handleTabClick = this.handleTabClick.bind(this);
     }
-
+    /*
+    * Change the current tab with click
+    */
   handleTabClick(event, selectedTab) {
         this.setState({ currentTab: selectedTab });
       };
-
+  /*
+  * Render class
+  */
   render() {
     const currentTab = this.state.currentTab;
     return (
@@ -49,4 +56,4 @@ class BuildProcessComponent extends React.Component{
   }
 }
 
-module.exports = BuildProcessComponent;
+export default BuildProcessComponent;
