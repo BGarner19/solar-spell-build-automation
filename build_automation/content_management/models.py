@@ -283,12 +283,41 @@ class DirectoryLayout(models.Model):
 
 # The Directory class defines the inner folders of the library version and supports nesting through the use of parent_id
 class Directory(models.Model):
-
     def set_original_name(self, file_name):
         self.original_file_name = file_name
         return os.path.join("banners", "folders", file_name)
 
+    name = models.CharField(max_length=100) # Name of the inner folder
+    dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)  # Top level library version that this folder belongs in
+    parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True) # Parent folder of this folder
+    banner_file = models.FileField(upload_to=set_original_name, null=True)
+    original_file_name = models.CharField(max_length=200, null=True)
+    individual_files = models.ManyToManyField(Content, related_name='individual_files') # Content in this folder
     banner_file_uploaded = False
+
+    # Tags to add to this folder
+    formats = models.ManyToManyField(Format)
+    library_versions = models.ManyToManyField(LibraryVersion)
+    audiences = models.ManyToManyField(Audience)
+    reading_levels = models.ManyToManyField(ReadingLevel)
+    main_subjects = models.ManyToManyField(MainSubject)
+    creators = models.ManyToManyField(Creator)
+    coverages = models.ManyToManyField(Coverage)
+    languages = models.ManyToManyField(Language)
+    catalogers = models.ManyToManyField(Cataloger)
+
+    # The following lines define whether ALL of the provided tags should be present in this folder of content. UI side,
+    # the user defines whether they want "ANY" or "ALL" of the input metadata to be filtered into this folder. These
+    # are the only filterable metadata options.
+    formats_need_all = models.BooleanField(default=False)
+    library_versions_need_all = models.BooleanField(default=False)
+    audiences_needs_all = models.BooleanField(default=False)
+    reading_levels_need_all = models.BooleanField(default=False)
+    main_subjects_need_all = models.BooleanField(default=False)
+    creators_need_all = models.BooleanField(default=False)
+    coverages_need_all = models.BooleanField(default=False)
+    languages_need_all = models.BooleanField(default=False)
+    catalogers_need_all = models.BooleanField(default=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -300,64 +329,6 @@ class Directory(models.Model):
     class Meta:
         ordering = ['pk']
 
-
-# This directory class takes the place of the old directory model which decides which tags should be
-# present in the content.
-# class DirectoryNew(models.Model):
-#     def set_original_name(self, file_name):
-#         self.original_file_name = file_name
-#         return os.path.join("banners", "folders", file_name)
-#
-#     name = models.CharField(max_length=100)
-#     dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)
-#     parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True)
-#     banner_file = models.FileField(upload_to=set_original_name, null=True)
-#     original_file_name = models.CharField(max_length=200, null=True)
-#     individual_files = models.ManyToManyField(ContentNew, related_name='individual_files')
-#
-#     titles = models.ManyToManyField(Title)
-#     file_names = models.ManyToManyField(FileName)
-#     descriptions = models.ManyToManyField(Description)
-#     formats = models.ManyToManyField(Format)
-#     library_versions = models.ManyToManyField(LibraryVersion)
-#     audiences = models.ManyToManyField(Audience)
-#     reading_levels = models.ManyToManyField(ReadingLevel)
-#     main_subjects = models.ManyToManyField(MainSubject)
-#     rights_holders = models.ManyToManyField(RightsHolder)
-#     rights_statements = models.ManyToManyField(RightsStatement)
-#     notes = models.ManyToManyField(Notes)
-#     creators = models.ManyToManyField(Creator)
-#     coverages = models.ManyToManyField(Coverage)
-#     languages = models.ManyToManyField(Language)
-#     catalogers = models.ManyToManyField(Cataloger)
-#
-#     titles_need_all = models.BooleanField(default=False)
-#     file_names_need_all = models.BooleanField(default=True)
-#     descriptions_need_all = models.BooleanField(default=False)
-#     formats_need_all = models.BooleanField(default=False)
-#     library_versions_need_all = models.BooleanField(default=False)
-#     audiences_need_all = models.BooleanField(default=False)
-#     reading_levels_need_all = models.BooleanField(default=False)
-#     main_subjects_need_all = models.BooleanField(default=False)
-#     rights_holders_need_all = models.BooleanField(default=False)
-#     rights_statements_need_all = models.BooleanField(default=False)
-#     notes_need_all = models.BooleanField(default=False)
-#     creators_need_all = models.BooleanField(default=False)
-#     coverages_need_all = models.BooleanField(default=False)
-#     languages_need_all = models.BooleanField(default=False)
-#     catalogers_need_all = models.BooleanField(default=False)
-#
-#     banner_file_uploaded = False
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, *kwargs)
-#         self.existing_banner_file = self.banner_file
-#
-#     def __str__(self):
-#         return "DirectoryNew[{}]".format(self.name)
-#
-#     class Meta:
-#         ordering = ['pk']
 
 class Build(models.Model):
     """
@@ -385,92 +356,10 @@ class Build(models.Model):
 
     task_state = models.IntegerField(choices=TASK_STATES)
     build_file = models.CharField(max_length=400, null=True)
-#    dir_layout = models.ForeignKey(DirectoryLayout, on_delete=models.SET_NULL, null=True)
+    dir_layout = models.ForeignKey(DirectoryLayout, on_delete=models.SET_NULL, null=True)
     completion_state = models.IntegerField(choices=BUILD_COMPLETION_STATES, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(null=True)
 
     class Meta:
         ordering = ['pk']
-
-# class Directory(models.Model): #OBSOLETE
-#
-#     def set_original_name(self, file_name):
-#         self.original_file_name = file_name
-#         return os.path.join("banners", "folders", file_name)
-#
-#     """
-#     Representation of the directory for each build.
-#     """
-#     name = models.CharField(max_length=100)
-#     dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)
-#     parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True)
-#     banner_file = models.FileField(upload_to=set_original_name, null=True)
-#     original_file_name = models.CharField(max_length=200, null=True)
-#     individual_files = models.ManyToManyField(Content, related_name='individual_files')
-#
-#     # Tags
-#     creators = models.ManyToManyField(Creator)
-#     coverages = models.ManyToManyField(Coverage)
-#     subjects = models.ManyToManyField(Subject)
-#     keywords = models.ManyToManyField(Keyword)
-#     workareas = models.ManyToManyField(Workarea)
-#     languages = models.ManyToManyField(Language)
-#     catalogers = models.ManyToManyField(Cataloger)
-#
-#     # Whether All of the specificed tags should be present in the content, or atleast one is needed.
-#     # Represent ALL or ANY of the UI state.
-#     creators_need_all = models.BooleanField(default=False)
-#     coverages_need_all = models.BooleanField(default=False)
-#     subjects_need_all = models.BooleanField(default=False)
-#     keywords_need_all = models.BooleanField(default=False)
-#     workareas_need_all = models.BooleanField(default=False)
-#     languages_need_all = models.BooleanField(default=False)
-#     catalogers_need_all = models.BooleanField(default=False)
-#
-#     banner_file_uploaded = False
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.existing_banner_file = self.banner_file
-#
-#     def __str__(self):
-#         return "Directory[{}]".format(self.name)
-#
-#     class Meta:
-#         ordering = ['pk']
-
-
-# OLD CODE
-# class Keyword(AbstractTag):  # OBSOLETE
-#
-#     def get_absolute_url(self):
-#         return reverse('keyword-detail', args=[str(self.id)])
-#
-#     def __str__(self):
-#         return "Keyword[{}]".format(self.name)
-#
-#     class Meta:
-#         ordering = ['name']
-#
-#
-# class Workarea(AbstractTag):  # OBSOLETE
-#
-#     def get_absolute_url(self):
-#         return reverse('workarea-detail', args=[str(self.id)])
-#
-#     def __str__(self):
-#         return "Workarea[{}]".format(self.name)
-#
-#     class Meta:
-#         ordering = ['name']
-# class Subject(AbstractTag): # OBSOLETE
-#
-#     def get_absolute_url(self):
-#         return reverse('subject-detail', args=[str(self.id)])
-#
-#     def __str__(self):
-#         return "Subject[{}]".format(self.name)
-#
-#     class Meta:
-#         ordering = ['name']
