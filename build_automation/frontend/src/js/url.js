@@ -25,7 +25,9 @@ const APP_URLS = {
     VIEW_BUILD: '/api/builds/',
     DISKSPACE: '/api/diskspace/'
 };
-
+/*
+* This function returns a URL
+*/
 function get_url(templateStringLiteral, context) {
     context = context || {};
     Object.keys(context).forEach(eachKey => {
@@ -34,7 +36,7 @@ function get_url(templateStringLiteral, context) {
     return templateStringLiteral;
 }
 
-module.exports = {
-    APP_URLS: APP_URLS,
-    get_url: get_url
+export {
+    APP_URLS,
+    get_url
 };
