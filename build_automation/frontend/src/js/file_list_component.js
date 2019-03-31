@@ -43,6 +43,7 @@ function ChippedTagsFormatter(input) {
         return "";
     }
     const allChips = [];
+    //If value equals number
     if (typeof(value)=='number') {
         allChips.push(<Chip key={row.id + '_' + column['name'] + '_' + value} label={__tagIdsTagsMap[column['name']
         +'s'][value]['name']} />);

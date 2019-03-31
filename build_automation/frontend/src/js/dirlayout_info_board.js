@@ -121,6 +121,7 @@ class DirlayoutInfoBoard extends React.Component {
                 console.error("Error in updating the library version info.", error);
                 console.error(error.response.data);
                 let errorMsg = 'Error in updating the library version.';
+                //If duplicate library name
                 if (!(JSON.stringify(error.response.data).indexOf('DUPLICATE_LAYOUT_NAME') === -1)) {
                     errorMsg = (<React.Fragment><b>ERROR:</b> There is an existing library version with the same name. Please change the name, and try again.</React.Fragment>);
                 }
@@ -143,6 +144,7 @@ class DirlayoutInfoBoard extends React.Component {
                 console.error("Error in creating a new directory layout ", error);
                 console.error(error.response.data);
                 let errorMsg = 'Error in creating the library version.';
+                //If duplicate library name
                 if (!(JSON.stringify(error.response.data).indexOf('DUPLICATE_LAYOUT_NAME') === -1)) {
                     errorMsg = (<React.Fragment><b>ERROR:</b> There is an existing library version with the same name. Please change the name, and try again.</React.Fragment>);
                 }
@@ -159,18 +161,22 @@ class DirlayoutInfoBoard extends React.Component {
     is_valid_state(is_save) {
         var hasErrors = false;
         const fieldErrors = {};
+        //Name is missing
         if (!this.state.name || this.state.name.trim().length === 0) {
             hasErrors = true;
             fieldErrors['name'] = 'Name is required.';
         }
+        //Description is missing
         if (!this.state.description || this.state.description.trim().length === 0) {
             hasErrors = true;
             fieldErrors['description'] = 'Description is required.';
         }
+        //Banner image is missing
         if (is_save && !this.state.bannerFile) {
             hasErrors = true;
             fieldErrors['banner'] = 'Banner file is required.';
         }
+        //Any other error
         if (hasErrors) {
             this.setState({fieldErrors});
         }
@@ -190,6 +196,7 @@ class DirlayoutInfoBoard extends React.Component {
             console.error("Error in cloning the directory layout", error);
             console.error(error.response.data);
             let errorMsg = 'Error in cloning the library version.';
+            //Library has already been cloned!
             if (response.status === HTTP_STATUS.CONFLICT) {
                 errorMsg = (<React.Fragment><b>ERROR:</b> A clone already exists for the library version. Please rename it before trying to clone.</React.Fragment>);
             }
