@@ -60,7 +60,7 @@ function getSuggestions(suggestions, inputValue, maxCount, searchKey) {
         const keep =
         (!inputValue || suggestion[searchKey].toLowerCase().indexOf(inputValue.toLowerCase()) !== -1) &&
             count < maxCount;
-
+        //Keep suggestion
         if (keep) {
             count += 1;
         }
@@ -97,6 +97,7 @@ class AutoCompleteWithChips extends React.Component {
     */
     handleKeyDown(evt) {
         const { inputValue, selectedItem } = this.state;
+        //Detect backspace
         if (selectedItem.length && !inputValue.length && keycode(evt) === 'backspace') {
             this.setState({
                 selectedItem: selectedItem.slice(0, selectedItem.length - 1),
@@ -115,11 +116,11 @@ class AutoCompleteWithChips extends React.Component {
     handleChange(item) {
         let { selectedItem } = this.state;
         const maxChips = this.props.maxChips;
-
+        //Is max chips greater than 0
         if (maxChips > 0 && selectedItem.length >= maxChips) {
             return;
         }
-
+        //Handle nulls
         if (selectedItem.indexOf(item) === -1) {
             if (this.props.onAddition) {
                 var selectedSuggestion = null;

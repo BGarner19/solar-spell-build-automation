@@ -102,6 +102,7 @@ class DirlayoutInfoBoard extends React.Component {
         const payload = new FormData();
         payload.append('name', this.state.name);
         payload.append('description', this.state.description);
+        //Check for banner file
         if (this.state.bannerFile) {
             payload.append('banner_file', this.state.bannerFile);
         }

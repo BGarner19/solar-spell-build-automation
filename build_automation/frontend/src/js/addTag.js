@@ -65,6 +65,7 @@ class TagCreation extends React.Component {
                 console.error("Error in updating the tag.", error);
                 console.error(error.response.data);
                 let errorMsg = 'Error in creating the tag.';
+            //Handle bad requests
             if (error.response.status === HTTP_STATUS.BAD_REQUEST) {
                 errorMsg = (<React.Fragment><b>ERROR:</b> This metadata already exists. Please rename it before trying to update.</React.Fragment>);
             }
@@ -84,6 +85,7 @@ class TagCreation extends React.Component {
                 console.error("Error in creating a new Tag", error);
                 console.error(error.response.data);
                 let errorMsg = 'Error in creating the tag.';
+            //Handle bad requests
             if (error.response.status === HTTP_STATUS.BAD_REQUEST) {
                 errorMsg = (<React.Fragment><b>ERROR:</b> This metadata already exists. Please rename it before trying to add.</React.Fragment>);
             }
@@ -150,7 +152,6 @@ class TagCreation extends React.Component {
                         "style": this.getErrorClass()
                     }}
                 />
-
             </Grid>
         );
 
