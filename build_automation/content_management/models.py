@@ -194,8 +194,8 @@ class Notes(models.Model):
         ordering = ['notes']
 
 
-# This definition is similar to the existing Content table. It will be similar to that table and should eventually
-# take its place once all front-end code is finished tying into it.
+# This table is the main table that defines all pieces of content in the database. All content can be defined by a set
+# of metadata terms, though most fields are not required for all content.
 class Content(models.Model):
 
     def set_original_name(self, file_name):
@@ -257,6 +257,8 @@ class Content(models.Model):
 
 
 # The DirectoryLayout class defines the top level library versions
+# A library version includes a banner, name, and description and can contain an arbitrary number of directories with
+# levels of nesting
 class DirectoryLayout(models.Model):
 
     def set_original_name(self, file_name):
@@ -265,9 +267,9 @@ class DirectoryLayout(models.Model):
 
     banner_file_uploaded = False
 
-    name = models.CharField(max_length=100, unique=True) # Name of the library version
-    description = models.CharField(max_length=5000, null=True) # Description of what the library version is for
-    banner_file = models.FileField(upload_to=set_original_name) # Banner file location for the entire version
+    name = models.CharField(max_length=100, unique=True)  # Name of the library version
+    description = models.CharField(max_length=5000, null=True)  # Description of what the library version is for
+    banner_file = models.FileField(upload_to=set_original_name)  # Banner file location for the entire version
     original_file_name = models.CharField(max_length=500, null=True)
 
     def __init__(self, *args, **kwargs):
@@ -282,20 +284,23 @@ class DirectoryLayout(models.Model):
 
 
 # The Directory class defines the inner folders of the library version and supports nesting through the use of parent_id
+# Each directory is associated with a single directory layout that defines which library it belongs to.
 class Directory(models.Model):
     def set_original_name(self, file_name):
         self.original_file_name = file_name
         return os.path.join("banners", "folders", file_name)
 
-    name = models.CharField(max_length=100) # Name of the inner folder
-    dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)  # Top level library version that this folder belongs in
-    parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True) # Parent folder of this folder
+    name = models.CharField(max_length=100)  # Name of the inner folder of the library
+    # Top level library version that this folder belongs in
+    dir_layout = models.ForeignKey(DirectoryLayout, related_name='directories', on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', related_name='subdirectories', on_delete=models.CASCADE, null=True)
+    # Parent folder of this folder
     banner_file = models.FileField(upload_to=set_original_name, null=True)
-    original_file_name = models.CharField(max_length=200, null=True)
-    individual_files = models.ManyToManyField(Content, related_name='individual_files') # Content in this folder
+    original_file_name = models.CharField(max_length=500, null=True)
+    individual_files = models.ManyToManyField(Content, related_name='individual_files')  # Content in this folder
     banner_file_uploaded = False
 
-    # Tags to add to this folder
+    # Tags to add to this folder. User can choose sets of content to add to the library by metadata tags that they share
     formats = models.ManyToManyField(Format)
     library_versions = models.ManyToManyField(LibraryVersion)
     audiences = models.ManyToManyField(Audience)
