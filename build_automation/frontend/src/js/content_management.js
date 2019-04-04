@@ -26,7 +26,9 @@ const styles = theme => ({
     },
 });
 
-
+/*
+* Constructor for Content Management
+*/
 class ContentManagement extends React.Component{
     constructor(props) {
         super(props);
@@ -88,6 +90,9 @@ class ContentManagement extends React.Component{
             console.error(error.response.data);
         });
     }
+    /*
+    * Process updates to text fields
+    */
     handleTextFieldUpdate(stateProperty, evt) {
         const targetVal = evt.target.value;
         this.setState((prevState, props) => {
@@ -112,6 +117,7 @@ class ContentManagement extends React.Component{
         this.setState((prevState, props)=>{
             const {files} = prevState;
             files.forEach(eachFile => {
+                //Compare selected file ids with stored file ids
                 if (eachFile.id===file.id){
                     files.splice(files.indexOf(eachFile), 1)
                 }
@@ -119,6 +125,9 @@ class ContentManagement extends React.Component{
             return {files, message: 'Delete Successful', messageType: 'info',};
         })
     }
+    /*
+    * Save content
+    */
     saveContentCallback(content, updated){
         console.log("save callback in CM.js");
         const currInstance = this;
@@ -128,8 +137,10 @@ class ContentManagement extends React.Component{
             currInstance.tagIdTagsMap=currInstance.buildTagIdTagsMap(response.data);
             currInstance.setState((prevState, props)=>{
                 const {files} = prevState;
+                //if file was updated
                 if (updated){
                     files.forEach(eachFile => {
+                        //Compare selected file ids with stored content ids
                         if (eachFile.id===content.id){
                             files.splice(files.indexOf(eachFile), 1, content);
                         }
@@ -153,7 +164,9 @@ class ContentManagement extends React.Component{
             console.error(error);
         });
     }
-
+    /*
+    * Should the page refresh?
+    */
     componentDidUpdate(prevProps, prevState) {
         if(this.state.shouldRefresh) {
             console.log(this.state);
@@ -173,8 +186,10 @@ class ContentManagement extends React.Component{
             currInstance.tagIdTagsMap=currInstance.buildTagIdTagsMap(response.data);
             currInstance.setState((prevState, props)=>{
                 const {files} = prevState;
+                //if file was updated
                 if (updated){
                     files.forEach(eachFile => {
+                        //Compare selected file ids with stored content ids
                         if (eachFile.id===content.id){
                             files.splice(files.indexOf(eachFile), 1, content);
                         }
@@ -256,7 +271,7 @@ class ContentManagement extends React.Component{
     }
     /*
     Screen for editing already uploaded content
-     */
+    */
     handleContentEdit(content){
         this.setState({
             currentView: 'upload',
@@ -279,13 +294,16 @@ class ContentManagement extends React.Component{
             }
         })
     }
+    /*
+    * Function to parse dates
+    */
     parseDate(inputStr) {
         let splitval = inputStr.split("-");
         return new Date(splitval[0], splitval[1] - 1, splitval[2]);
     }
     /*
     Main screen for content management
-     */
+    */
     render(){
         return (
             <div>
@@ -337,11 +355,15 @@ class ContentManagement extends React.Component{
             </div>
         )
     }
-
+    /*
+    * Error class
+    */
     getErrorClass() {
         return this.state.messageType === "error" ? {backgroundColor: '#B71C1C', fontWeight: 'normal'} : {};
     }
-
+    /*
+    * Close Snackbar
+    */
     handleCloseSnackbar() {
         this.setState({
             message: null,
