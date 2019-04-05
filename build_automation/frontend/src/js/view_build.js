@@ -1,20 +1,22 @@
 import axios from 'axios';
 import React from 'react';
 
-import Checkbox from 'material-ui/Checkbox';
-import { FormGroup, FormControlLabel } from 'material-ui/Form';
-import Grid from 'material-ui/Grid';
-import ListSubheader from 'material-ui/List/ListSubheader';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import Checkbox from '@material-ui/core/Checkbox';
+import { FormGroup, FormControlLabel } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import Typography from 'material-ui/Typography';
+import Typography from '@material-ui/core/Typography';
 
 import { APP_URLS } from './url.js';
 import DownloadBuild from './download_build.js';
-
+/*
+* Constructor for View Build
+*/
 class ViewBuildComponent extends React.Component{
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             id: -1,
             name: '',
@@ -30,10 +32,15 @@ class ViewBuildComponent extends React.Component{
         };
         this.handleCheckChange = this.handleCheckChange.bind(this)
     }
+    /*
+    * Get an inital state
+    */
     getInitialState() {
         return {checked: true}
     }
-
+    /*
+    * Load data
+    */
     componentDidMount() {
         this.loadData();
 
@@ -42,14 +49,20 @@ class ViewBuildComponent extends React.Component{
             10000
         );
     }
-
+    /*
+    * Unload everything
+    */
     componentWillUnmount() {
         clearInterval(this.intervalId);
     }
-
+    /*
+    * TODO
+    */
     handleCheckChange(){
     }
-
+    /*
+    * Populate data
+    */
     loadData() {
         const currInstance = this;
         axios.get(APP_URLS.VIEW_BUILD, {
@@ -58,7 +71,7 @@ class ViewBuildComponent extends React.Component{
             currInstance.setState({
                 isLoaded:true,
                 completionState:true
-            })
+            });
             if(response.data.length == 0){
                 currInstance.setState({
                     noOfBuilds : 0
@@ -89,7 +102,7 @@ class ViewBuildComponent extends React.Component{
                         name: currInstance.state.name,
                         currTime: currInstance.state.latestBuild.end_time,
                         download: currInstance.state.latestBuild.build_file
-                    }
+                    };
                      currInstance.setState({
                        data:data
                     });
@@ -103,11 +116,11 @@ class ViewBuildComponent extends React.Component{
                             };
                     const currBuild = (
                         <div>
-                            <Typography variant="headline" gutterBottom>
+                            <Typography variant="h5" gutterBottom>
                                 {currInstance.state.name}
                             </Typography>
                         </div>
-                    )
+                    );
 
                         currInstance.setState({currBuild:currBuild});
                 }
@@ -122,9 +135,11 @@ class ViewBuildComponent extends React.Component{
             console.error(error)
         });
     };
-
+    /*
+    * Render Image creation
+    */
     render(){
-        var elements=null
+        var elements=null;
         if(this.state.isLoaded && !this.state.completionState){
             elements = (
                 <div>
@@ -155,7 +170,7 @@ class ViewBuildComponent extends React.Component{
         else if(this.state.isLoaded && this.state.noOfBuilds == 0){
             elements = (
                 <div>
-                   <Typography variant="display1" gutterBottom>
+                   <Typography variant="h4" gutterBottom>
                             No Images are currently available.
                    </Typography>
 
@@ -165,7 +180,7 @@ class ViewBuildComponent extends React.Component{
         else if(this.state.isLoaded && this.state.noOfBuilds == -1){
             elements = (
                 <div>
-                   <Typography variant="display1" gutterBottom>
+                   <Typography variant="h4" gutterBottom>
                             Image Creation in progress..
                    </Typography>
 
@@ -184,4 +199,4 @@ class ViewBuildComponent extends React.Component{
     }
 }
 
-module.exports = ViewBuildComponent
+export default ViewBuildComponent;
