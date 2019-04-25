@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import UploadContent from './upload_content';
 import Snackbar from '@material-ui/core/Snackbar';
 import BulkUploadContent from './bulk_upload_content';
+import BulkMetadataUpload from './bulk_metadata_upload';
 import FileListComponent from './file_list_component';
 import {buildMapFromArray} from './utils';
 import {APP_URLS} from "./url";
@@ -47,7 +48,9 @@ class ContentManagement extends React.Component{
         this.handleFileDelete = this.handleFileDelete.bind(this);
         this.saveContentCallback = this.saveContentCallback.bind(this);
 		this.saveContentCallbackTwo = this.saveContentCallbackTwo.bind(this);
+        this.saveMetadataCallback = this.saveMetadataCallback.bind(this);
         this.uploadNewFile = this.uploadNewFile.bind(this);
+        this.uploadBulkMetadata = this.uploadBulkMetadata.bind(this);
         this.handleContentEdit = this.handleContentEdit.bind(this);
         this.handleCloseSnackbar = this.handleCloseSnackbar.bind(this);
     }
@@ -62,6 +65,7 @@ class ContentManagement extends React.Component{
         Object.keys(tags).forEach(eachKey => {
             tagIdTagMap[eachKey] = buildMapFromArray(tags[eachKey], 'id');
         });
+        console.log(tagIdTagMap);
         return tagIdTagMap;
     }
     loadData() {
@@ -196,6 +200,39 @@ class ContentManagement extends React.Component{
             console.error(error);
         });
     }
+    
+    saveMetadataCallback(content, updated) {
+
+        const currInstance = this;
+        
+        
+        axios.get(APP_URLS.CONTENTS_LIST, {
+            responseType: 'json'
+        }).then(function (response) {
+            currInstance.content = response.data;
+            currInstance.setState((prevState, props)=>{
+                const {files} = prevState; 
+                if (updated){
+                    files.forEach(eachFile => {
+                        if (eachFile.id===content.id){
+                            files.splice(files.indexOf(eachFile), 1, content);
+                        }
+                    });
+                }
+                currInstance.forceUpdate();
+                return {
+                    message: 'Metadata File Save Successful',
+                    messageType: 'info',
+                    currentView: 'manage',
+                    
+                }
+            })
+        }).catch(function (error) {
+            console.error(error);
+        });
+        
+    }
+    
     uploadNewFile(){
         this.setState({
             currentView: 'upload',
@@ -222,6 +259,29 @@ class ContentManagement extends React.Component{
     uploadBulkFiles() {
         this.setState({
             currentView: 'bulkUploadContent',
+			content: {
+                id: -1,
+                name: "",
+                description: "",
+                creators: [],
+                coverages: [],
+                subjects: [],
+                keywords: [],
+                workareas: [],
+                languages: [],
+                catalogers: [],
+                updatedDate: new Date(),
+                source: "",
+                copyright: "",
+                rightsStatement: "",
+                originalFileName: ""
+            }
+        })
+    }
+
+       uploadBulkMetadata() {
+        this.setState({
+            currentView: 'bulkMetadataUpload',
 			content: {
                 id: -1,
                 name: "",
@@ -296,8 +356,13 @@ class ContentManagement extends React.Component{
                         <Button variant="raised" color="primary" style={{width: '160px'}} onClick={e => {this.uploadBulkFiles()}}>
                             Express Load
                         </Button>
+                        
+                        
                     </Grid>
 					<Grid item xs>
+                        <Button variant="raised" color="primary" style={{width: '160px'}} onClick={e => {this.uploadBulkMetadata()}}>
+                            Metadata Load
+                        </Button>
 					</Grid>
 					<Grid item xs>
 					</Grid>
@@ -318,7 +383,11 @@ class ContentManagement extends React.Component{
                                                                                                  content={this.state.content}/>}
 
                         {this.state.isLoaded && this.state.currentView === 'bulkUploadContent' && <BulkUploadContent onSave={this.saveContentCallbackTwo} 
-						/* content={this.state.content} *//>}
+						content={this.state.content} />}
+                        
+                        {this.state.isLoaded && this.state.currentView === 'bulkMetadataUpload' && <BulkMetadataUpload onSave={this.saveContentCallback}
+                                                                                                 tagIdsTagsMap={this.tagIdTagsMap} allTags={this.state.tags}
+						content={this.state.content} saveCallback={this.saveContentCallback} />}
 						
                         {!this.state.isLoaded && 'loading'}
                     </Grid>
